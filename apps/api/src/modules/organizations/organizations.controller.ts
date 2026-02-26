@@ -25,7 +25,7 @@ export class OrganizationsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.organizations.create(body);
+    const item = await this.organizations.create({ name: body.name, slug: body.slug });
     return { item };
   }
 
