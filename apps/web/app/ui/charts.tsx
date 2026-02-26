@@ -132,7 +132,7 @@ export function KpiPieChart({ data, height = 200 }: ChartProps) {
           outerRadius={70}
           paddingAngle={2}
           dataKey="value"
-          label={({ name, percent }: { name: string; percent?: number }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
+          label={({ name, percent }) => `${name ?? ''} ${((percent ?? 0) * 100).toFixed(0)}%`}
           labelLine={{ stroke: "#8b9e8b" }}
         >
           {data.map((_, index) => (
