@@ -1,0 +1,20 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+exporters:
+  otlphttp:
+    endpoint: ${INGEST_OTLP_HTTP_ENDPOINT}
+    headers:
+      Authorization: "Bearer ${INGEST_API_KEY}"
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlphttp]
+    logs:
+      receivers: [otlp]
+      exporters: [otlphttp]

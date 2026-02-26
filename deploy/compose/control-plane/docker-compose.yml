@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16.2
+    environment:
+      POSTGRES_USER: pgmonitor
+      POSTGRES_PASSWORD: pgmonitor
+      POSTGRES_DB: pgmonitor
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgmonitor-db:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.2
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgmonitor-db:

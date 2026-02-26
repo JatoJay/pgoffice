@@ -1,0 +1,14 @@
+node_modules
+.dist
+.DS_Store
+.env
+.env.*
+*.log
+*.pid
+coverage
+.next
+out
+dist
+.tmp
+.tmp*
+.cache

@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--enable-feature=expand-env"
+    environment:
+      INGEST_REMOTE_WRITE_URL: ${INGEST_REMOTE_WRITE_URL:-http://host.docker.internal:8080/api/v1/write}
+      INGEST_API_KEY: ${INGEST_API_KEY:-pgm_dev_key_123}
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - node_exporter
+      - postgres_exporter
+
+  node_exporter:
+    image: prom/node-exporter:v1.8.1
+    ports:
+      - "9100:9100"
+
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    environment:
+      DATA_SOURCE_NAME: ${POSTGRES_EXPORTER_DSN:-postgresql://postgres:postgres@host.docker.internal:5432/postgres?sslmode=disable}
+    ports:
+      - "9187:9187"
+
+  otel_collector:
+    image: otel/opentelemetry-collector-contrib:0.98.0
+    command:
+      - "--config=/etc/otel-collector.yml"
+    environment:
+      INGEST_OTLP_HTTP_ENDPOINT: ${INGEST_OTLP_HTTP_ENDPOINT:-http://host.docker.internal:8080/otlp/v1}
+      INGEST_API_KEY: ${INGEST_API_KEY:-pgm_dev_key_123}
+    volumes:
+      - ./otel-collector.yml:/etc/otel-collector.yml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"

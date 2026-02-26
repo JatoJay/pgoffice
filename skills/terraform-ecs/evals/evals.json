@@ -1,0 +1,23 @@
+{
+  "skill_name": "terraform-ecs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to deploy a Node.js API to AWS. We're using Docker and want to use Fargate so we don't have to manage servers. The app runs on port 3000 and needs to connect to an RDS database. Can you create the Terraform code for this?",
+      "expected_output": "Terraform configuration with ECS cluster, Fargate task definition on port 3000, ECS service, ALB, security groups allowing RDS access, IAM roles, and CloudWatch logs",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We have an existing ECS cluster but need to add auto-scaling. When CPU goes above 70% we should scale up, and scale down when it drops. We want between 2 and 20 tasks running.",
+      "expected_output": "Terraform configuration for Application Auto Scaling with target tracking policy for CPU utilization at 70%, min capacity 2, max capacity 20",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I'm migrating from docker-compose to ECS. My compose file has 3 services: a web frontend on port 80, an API on port 8080, and a worker that processes background jobs. How do I structure this in Terraform?",
+      "expected_output": "Terraform configuration with either 3 separate task definitions and services, or a single task with multiple container definitions, explaining the tradeoffs of each approach",
+      "files": []
+    }
+  ]
+}
