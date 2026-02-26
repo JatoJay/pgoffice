@@ -56,7 +56,7 @@ export default async function SettingsPage() {
             <p className="eyebrow">Settings</p>
             <h1>Organization Settings</h1>
             <p className="lede">
-              Customize your organization's branding, colors, and appearance.
+              Customize your organization&apos;s branding, colors, and appearance.
             </p>
           </div>
         </div>

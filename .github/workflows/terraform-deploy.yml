@@ -2,7 +2,7 @@ name: Terraform Deploy
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ dev, staging ]
   workflow_dispatch:
     inputs:
       environment:
