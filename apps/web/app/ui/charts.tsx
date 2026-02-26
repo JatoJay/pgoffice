@@ -22,8 +22,8 @@ const COLORS = ["#10b981", "#059669", "#14b8a6", "#22c55e", "#0d9488", "#34d399"
 
 type DataPoint = {
   name: string;
-  value: number;
-  [key: string]: string | number;
+  value?: number;
+  [key: string]: string | number | undefined;
 };
 
 type ChartProps = {

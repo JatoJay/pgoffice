@@ -21,8 +21,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      build_success: ${{ steps.build.outcome == 'success' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +43,7 @@ jobs:
 
   deploy-dev:
     needs: build
-    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev')
+    if: github.ref == 'refs/heads/dev' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev')
     runs-on: ubuntu-latest
     environment: dev
 
@@ -74,8 +72,8 @@ jobs:
         run: terraform apply -var-file="environments/dev/terraform.tfvars" -auto-approve
 
   deploy-staging:
-    needs: deploy-dev
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    needs: build
+    if: github.ref == 'refs/heads/staging' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
     runs-on: ubuntu-latest
     environment: staging
 

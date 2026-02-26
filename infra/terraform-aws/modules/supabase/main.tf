@@ -1,10 +1,10 @@
 locals {
-  supabase_api_port    = 8000
-  supabase_studio_port = 3000
-  supabase_auth_port   = 9999
-  supabase_rest_port   = 3000
+  supabase_api_port      = 8000
+  supabase_studio_port   = 3000
+  supabase_auth_port     = 9999
+  supabase_rest_port     = 3000
   supabase_realtime_port = 4000
-  supabase_meta_port   = 8080
+  supabase_meta_port     = 8080
 }
 
 resource "aws_cloudwatch_log_group" "supabase" {

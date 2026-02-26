@@ -70,10 +70,10 @@ resource "aws_db_instance" "main" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   parameter_group_name   = aws_db_parameter_group.main.name
 
-  multi_az               = var.environment == "production"
-  publicly_accessible    = false
-  skip_final_snapshot    = var.environment != "production"
-  deletion_protection    = var.environment == "production"
+  multi_az                = var.environment == "production"
+  publicly_accessible     = false
+  skip_final_snapshot     = var.environment != "production"
+  deletion_protection     = var.environment == "production"
   backup_retention_period = var.environment == "production" ? 7 : 1
 
   performance_insights_enabled = true

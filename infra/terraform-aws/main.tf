@@ -45,15 +45,15 @@ module "ecr" {
 module "rds" {
   source = "./modules/rds"
 
-  project              = var.project
-  environment          = var.environment
-  vpc_id               = module.vpc.vpc_id
-  private_subnet_ids   = module.vpc.private_subnet_ids
-  db_instance_class    = var.db_instance_class
-  db_allocated_storage = var.db_allocated_storage
-  db_name              = var.db_name
-  db_username          = var.db_username
-  db_password          = var.db_password
+  project               = var.project
+  environment           = var.environment
+  vpc_id                = module.vpc.vpc_id
+  private_subnet_ids    = module.vpc.private_subnet_ids
+  db_instance_class     = var.db_instance_class
+  db_allocated_storage  = var.db_allocated_storage
+  db_name               = var.db_name
+  db_username           = var.db_username
+  db_password           = var.db_password
   ecs_security_group_id = module.ecs.ecs_tasks_security_group_id
 }
 
@@ -71,11 +71,11 @@ module "alb" {
 module "ecs" {
   source = "./modules/ecs"
 
-  project            = var.project
-  environment        = var.environment
-  aws_region         = var.aws_region
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnet_ids
+  project               = var.project
+  environment           = var.environment
+  aws_region            = var.aws_region
+  vpc_id                = module.vpc.vpc_id
+  private_subnet_ids    = module.vpc.private_subnet_ids
   alb_security_group_id = module.alb.alb_security_group_id
 
   web_ecr_repository_url = module.ecr.web_repository_url
@@ -98,9 +98,9 @@ module "ecs" {
   min_capacity      = var.min_capacity
   max_capacity      = var.max_capacity
 
-  supabase_url       = module.supabase.supabase_url
-  supabase_anon_key  = module.supabase.supabase_anon_key
-  database_url       = module.rds.database_url
+  supabase_url      = module.supabase.supabase_url
+  supabase_anon_key = module.supabase.supabase_anon_key
+  database_url      = module.rds.database_url
 
   depends_on = [module.alb]
 }
@@ -121,11 +121,11 @@ module "supabase" {
   database_user     = var.db_username
   database_password = var.db_password
 
-  jwt_secret           = var.supabase_jwt_secret
-  anon_key             = var.supabase_anon_key
-  service_role_key     = var.supabase_service_role_key
-  dashboard_username   = var.supabase_dashboard_username
-  dashboard_password   = var.supabase_dashboard_password
+  jwt_secret         = var.supabase_jwt_secret
+  anon_key           = var.supabase_anon_key
+  service_role_key   = var.supabase_service_role_key
+  dashboard_username = var.supabase_dashboard_username
+  dashboard_password = var.supabase_dashboard_password
 
   ecs_cluster_id              = module.ecs.cluster_id
   ecs_cluster_name            = module.ecs.cluster_name
