@@ -65,11 +65,28 @@ jobs:
 
       - name: Terraform Plan
         working-directory: infra/terraform-aws
-        run: terraform plan -var-file="environments/dev/terraform.tfvars"
+        run: |
+          terraform plan -var-file="environments/dev/terraform.tfvars" \
+            -var="certificate_arn=${{ secrets.ACM_CERTIFICATE_ARN }}" \
+            -var="db_username=${{ secrets.DB_USERNAME }}" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="supabase_jwt_secret=${{ secrets.SUPABASE_JWT_SECRET }}" \
+            -var="supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
+            -var="supabase_service_role_key=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -var="supabase_dashboard_password=${{ secrets.SUPABASE_DASHBOARD_PASSWORD }}"
 
       - name: Terraform Apply
         working-directory: infra/terraform-aws
-        run: terraform apply -var-file="environments/dev/terraform.tfvars" -auto-approve
+        run: |
+          terraform apply -var-file="environments/dev/terraform.tfvars" \
+            -var="certificate_arn=${{ secrets.ACM_CERTIFICATE_ARN }}" \
+            -var="db_username=${{ secrets.DB_USERNAME }}" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="supabase_jwt_secret=${{ secrets.SUPABASE_JWT_SECRET }}" \
+            -var="supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
+            -var="supabase_service_role_key=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -var="supabase_dashboard_password=${{ secrets.SUPABASE_DASHBOARD_PASSWORD }}" \
+            -auto-approve
 
   deploy-staging:
     needs: build
@@ -95,8 +112,25 @@ jobs:
 
       - name: Terraform Plan
         working-directory: infra/terraform-aws
-        run: terraform plan -var-file="environments/staging/terraform.tfvars"
+        run: |
+          terraform plan -var-file="environments/staging/terraform.tfvars" \
+            -var="certificate_arn=${{ secrets.ACM_CERTIFICATE_ARN }}" \
+            -var="db_username=${{ secrets.DB_USERNAME }}" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="supabase_jwt_secret=${{ secrets.SUPABASE_JWT_SECRET }}" \
+            -var="supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
+            -var="supabase_service_role_key=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -var="supabase_dashboard_password=${{ secrets.SUPABASE_DASHBOARD_PASSWORD }}"
 
       - name: Terraform Apply
         working-directory: infra/terraform-aws
-        run: terraform apply -var-file="environments/staging/terraform.tfvars" -auto-approve
+        run: |
+          terraform apply -var-file="environments/staging/terraform.tfvars" \
+            -var="certificate_arn=${{ secrets.ACM_CERTIFICATE_ARN }}" \
+            -var="db_username=${{ secrets.DB_USERNAME }}" \
+            -var="db_password=${{ secrets.DB_PASSWORD }}" \
+            -var="supabase_jwt_secret=${{ secrets.SUPABASE_JWT_SECRET }}" \
+            -var="supabase_anon_key=${{ secrets.SUPABASE_ANON_KEY }}" \
+            -var="supabase_service_role_key=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -var="supabase_dashboard_password=${{ secrets.SUPABASE_DASHBOARD_PASSWORD }}" \
+            -auto-approve
