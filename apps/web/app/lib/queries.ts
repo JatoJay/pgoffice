@@ -22,6 +22,9 @@ export type ProgramSummary = {
   status?: string;
   description?: string | null;
   created_at: string;
+  total_budget?: string | null;
+  spent_budget?: string | null;
+  currency?: string | null;
 };
 
 export type BudgetSummary = {
