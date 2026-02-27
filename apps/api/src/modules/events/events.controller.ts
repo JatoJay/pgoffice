@@ -64,7 +64,19 @@ export class EventsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.events.create(body);
+    const item = await this.events.create({
+      tenant_id: body.tenant_id,
+      program_id: body.program_id,
+      name: body.name,
+      description: body.description,
+      type: body.type,
+      status: body.status,
+      start_at: body.start_at,
+      end_at: body.end_at,
+      location: body.location,
+      virtual_url: body.virtual_url,
+      capacity: body.capacity
+    });
     return { item };
   }
 
@@ -100,7 +112,11 @@ export class EventsController {
     @Param("id") id: string,
     @Body(new ZodValidationPipe(sessionSchema)) body: z.infer<typeof sessionSchema>
   ) {
-    const item = await this.events.createSession(id, body);
+    const item = await this.events.createSession(id, {
+      name: body.name,
+      start_at: body.start_at,
+      end_at: body.end_at
+    });
     return { item };
   }
 
@@ -109,7 +125,10 @@ export class EventsController {
     @Param("id") id: string,
     @Body(new ZodValidationPipe(registrationSchema)) body: z.infer<typeof registrationSchema>
   ) {
-    const item = await this.events.createRegistration(id, body);
+    const item = await this.events.createRegistration(id, {
+      profile_id: body.profile_id,
+      status: body.status
+    });
     return { item };
   }
 
@@ -118,7 +137,11 @@ export class EventsController {
     @Param("id") id: string,
     @Body(new ZodValidationPipe(attendanceSchema)) body: z.infer<typeof attendanceSchema>
   ) {
-    const item = await this.events.createAttendance(id, body);
+    const item = await this.events.createAttendance(id, {
+      event_session_id: body.event_session_id,
+      profile_id: body.profile_id,
+      checked_in_at: body.checked_in_at
+    });
     return { item };
   }
 
@@ -127,7 +150,11 @@ export class EventsController {
     @Param("id") id: string,
     @Body(new ZodValidationPipe(feedbackSchema)) body: z.infer<typeof feedbackSchema>
   ) {
-    const item = await this.events.createFeedback(id, body);
+    const item = await this.events.createFeedback(id, {
+      profile_id: body.profile_id,
+      score: body.score,
+      comments: body.comments
+    });
     return { item };
   }
 }
