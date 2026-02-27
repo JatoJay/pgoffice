@@ -27,7 +27,8 @@ export class OrganizationsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: CreateInput) {
-    const item = await this.organizations.create({ name: body.name, slug: body.slug });
+    const { name, slug } = body;
+    const item = await this.organizations.create({ name, slug });
     return { item };
   }
 
