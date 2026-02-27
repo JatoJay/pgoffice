@@ -172,7 +172,10 @@ export class ProgramsController {
     @Param("id") id: string,
     @Body(new ZodValidationPipe(moduleSchema)) body: z.infer<typeof moduleSchema>
   ) {
-    const items = await this.programs.updateModules(id, body.modules);
+    const items = await this.programs.updateModules(id, body.modules.map(m => ({
+      module_key: m.module_key,
+      is_enabled: m.is_enabled
+    })));
     return { items };
   }
 
