@@ -8,6 +8,8 @@ const createSchema = z.object({
   slug: z.string().min(1).optional()
 });
 
+type CreateInput = z.output<typeof createSchema>;
+
 const updateSchema = z.object({
   name: z.string().min(1).optional(),
   slug: z.string().min(1).optional()
@@ -24,8 +26,8 @@ export class OrganizationsController {
   }
 
   @Post()
-  async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.organizations.create({ name: body.name as string, slug: body.slug });
+  async create(@Body(new ZodValidationPipe(createSchema)) body: CreateInput) {
+    const item = await this.organizations.create({ name: body.name, slug: body.slug });
     return { item };
   }
 
