@@ -125,8 +125,7 @@ export class PhaseTasksController {
       due_at: body.due_at,
       order_index: body.order_index,
       reminder_enabled: body.reminder_enabled,
-      reminder_days_before: body.reminder_days_before,
-      allocated_budget: body.allocated_budget
+      reminder_days_before: body.reminder_days_before
     });
     return { item };
   }
