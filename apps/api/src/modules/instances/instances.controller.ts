@@ -42,7 +42,15 @@ export class InstancesController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.instances.create(body);
+    const item = await this.instances.create({
+      organization_id: body.organization_id,
+      name: body.name,
+      slug: body.slug,
+      status: body.status,
+      subscription_tier: body.subscription_tier,
+      seat_limit: body.seat_limit,
+      user_limit: body.user_limit
+    });
     return { item };
   }
 
