@@ -29,7 +29,14 @@ export class MatchesController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.matches.create(body);
+    const item = await this.matches.create({
+      tenant_id: body.tenant_id,
+      program_id: body.program_id,
+      source_profile_id: body.source_profile_id,
+      target_profile_id: body.target_profile_id,
+      status: body.status,
+      score: body.score
+    });
     return { item };
   }
 
