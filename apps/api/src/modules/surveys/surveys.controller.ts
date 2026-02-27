@@ -41,7 +41,13 @@ export class SurveysController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.surveys.create(body);
+    const item = await this.surveys.create({
+      tenant_id: body.tenant_id,
+      program_id: body.program_id,
+      name: body.name,
+      description: body.description,
+      status: body.status
+    });
     return { item };
   }
 
@@ -77,7 +83,12 @@ export class SurveysController {
     @Param("id") id: string,
     @Body(new ZodValidationPipe(questionSchema)) body: z.infer<typeof questionSchema>
   ) {
-    const item = await this.surveys.createQuestion(id, body);
+    const item = await this.surveys.createQuestion(id, {
+      question: body.question,
+      type: body.type,
+      options: body.options,
+      order_index: body.order_index
+    });
     return { item };
   }
 
