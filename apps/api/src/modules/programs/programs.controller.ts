@@ -62,7 +62,17 @@ export class ProgramsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.programs.create(body);
+    const item = await this.programs.create({
+      tenant_id: body.tenant_id,
+      project_id: body.project_id,
+      name: body.name,
+      description: body.description,
+      status: body.status,
+      start_at: body.start_at,
+      end_at: body.end_at,
+      total_budget: body.total_budget,
+      currency: body.currency
+    });
     return { item };
   }
 
@@ -116,7 +126,13 @@ export class ProgramsController {
     @Param("id") id: string,
     @Body(new ZodValidationPipe(phaseSchema)) body: z.infer<typeof phaseSchema>
   ) {
-    const item = await this.programs.createPhase(id, body);
+    const item = await this.programs.createPhase(id, {
+      name: body.name,
+      description: body.description,
+      start_at: body.start_at,
+      end_at: body.end_at,
+      order_index: body.order_index
+    });
     return { item };
   }
 
@@ -171,7 +187,10 @@ export class ProgramsController {
     @Param("id") id: string,
     @Body(new ZodValidationPipe(segmentSchema)) body: z.infer<typeof segmentSchema>
   ) {
-    const item = await this.programs.createSegment(id, body);
+    const item = await this.programs.createSegment(id, {
+      name: body.name,
+      description: body.description
+    });
     return { item };
   }
 

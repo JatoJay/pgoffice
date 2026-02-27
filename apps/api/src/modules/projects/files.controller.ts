@@ -21,7 +21,17 @@ export class FilesController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.files.create(body);
+    const item = await this.files.create({
+      tenant_id: body.tenant_id,
+      entity_type: body.entity_type,
+      entity_id: body.entity_id,
+      filename: body.filename,
+      mime_type: body.mime_type,
+      size_bytes: body.size_bytes,
+      storage_key: body.storage_key,
+      bucket: body.bucket,
+      uploaded_by: body.uploaded_by
+    });
     return { item };
   }
 

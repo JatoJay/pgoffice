@@ -49,7 +49,18 @@ export class PhaseTasksController {
     @Param("phaseId") phaseId: string,
     @Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>
   ) {
-    const { task, programId } = await this.tasks.create(phaseId, body);
+    const { task, programId } = await this.tasks.create(phaseId, {
+      name: body.name,
+      description: body.description,
+      status: body.status,
+      assignee_id: body.assignee_id,
+      start_at: body.start_at,
+      due_at: body.due_at,
+      order_index: body.order_index,
+      reminder_enabled: body.reminder_enabled,
+      reminder_days_before: body.reminder_days_before,
+      allocated_budget: body.allocated_budget
+    });
     if (programId && body.allocated_budget) {
       await this.programs.updateSpentBudget(programId);
       await this.programs.checkBudgetExhaustion(programId);
@@ -105,7 +116,18 @@ export class PhaseTasksController {
     @Param("taskId") taskId: string,
     @Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>
   ) {
-    const item = await this.tasks.createSubtask(taskId, body);
+    const item = await this.tasks.createSubtask(taskId, {
+      name: body.name,
+      description: body.description,
+      status: body.status,
+      assignee_id: body.assignee_id,
+      start_at: body.start_at,
+      due_at: body.due_at,
+      order_index: body.order_index,
+      reminder_enabled: body.reminder_enabled,
+      reminder_days_before: body.reminder_days_before,
+      allocated_budget: body.allocated_budget
+    });
     return { item };
   }
 

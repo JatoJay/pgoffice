@@ -28,7 +28,12 @@ export class UsersController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.users.create(body);
+    const item = await this.users.create({
+      external_id: body.external_id,
+      email: body.email,
+      name: body.name,
+      avatar_url: body.avatar_url
+    });
     return { item };
   }
 

@@ -32,7 +32,14 @@ export class KpisController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.kpis.create(body);
+    const item = await this.kpis.create({
+      tenant_id: body.tenant_id,
+      name: body.name,
+      description: body.description,
+      unit: body.unit,
+      formula: body.formula,
+      is_custom: body.is_custom
+    });
     return { item };
   }
 

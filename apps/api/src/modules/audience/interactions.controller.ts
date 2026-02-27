@@ -17,7 +17,13 @@ export class InteractionsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.interactions.create(body);
+    const item = await this.interactions.create({
+      tenant_id: body.tenant_id,
+      profile_id: body.profile_id,
+      type: body.type,
+      occurred_at: body.occurred_at,
+      notes: body.notes
+    });
     return { item };
   }
 }

@@ -23,7 +23,13 @@ export class MetricsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.metrics.create(body);
+    const item = await this.metrics.create({
+      tenant_id: body.tenant_id,
+      kpi_id: body.kpi_id,
+      name: body.name,
+      source_type: body.source_type,
+      source_config: body.source_config
+    });
     return { item };
   }
 }

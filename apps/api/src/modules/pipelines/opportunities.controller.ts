@@ -37,7 +37,15 @@ export class OpportunitiesController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.opportunities.create(body);
+    const item = await this.opportunities.create({
+      tenant_id: body.tenant_id,
+      pipeline_id: body.pipeline_id,
+      profile_id: body.profile_id,
+      title: body.title,
+      amount: body.amount,
+      status: body.status,
+      notes: body.notes
+    });
     return { item };
   }
 

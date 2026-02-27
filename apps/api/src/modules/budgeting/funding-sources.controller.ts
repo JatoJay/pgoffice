@@ -21,7 +21,11 @@ export class FundingSourcesController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.sources.create(body);
+    const item = await this.sources.create({
+      tenant_id: body.tenant_id,
+      name: body.name,
+      description: body.description
+    });
     return { item };
   }
 }

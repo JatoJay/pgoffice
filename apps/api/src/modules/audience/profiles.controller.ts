@@ -42,7 +42,19 @@ export class ProfilesController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.profiles.create(body);
+    const item = await this.profiles.create({
+      tenant_id: body.tenant_id,
+      user_id: body.user_id,
+      type: body.type,
+      first_name: body.first_name,
+      last_name: body.last_name,
+      display_name: body.display_name,
+      email: body.email,
+      phone: body.phone,
+      organization: body.organization,
+      title: body.title,
+      bio: body.bio
+    });
     return { item };
   }
 

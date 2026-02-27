@@ -21,7 +21,11 @@ export class MembershipsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.memberships.create(body);
+    const item = await this.memberships.create({
+      tenant_id: body.tenant_id,
+      user_id: body.user_id,
+      role_id: body.role_id
+    });
     return { item };
   }
 

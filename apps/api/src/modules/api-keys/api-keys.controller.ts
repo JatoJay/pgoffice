@@ -20,7 +20,10 @@ export class ApiKeysController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.apiKeys.create(body);
+    const item = await this.apiKeys.create({
+      tenant_id: body.tenant_id,
+      name: body.name
+    });
     return { item };
   }
 

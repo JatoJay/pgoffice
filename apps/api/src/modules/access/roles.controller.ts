@@ -30,7 +30,14 @@ export class RolesController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.roles.create(body);
+    const item = await this.roles.create({
+      tenant_id: body.tenant_id,
+      key: body.key,
+      name: body.name,
+      description: body.description,
+      permissions: body.permissions,
+      is_system: body.is_system
+    });
     return { item };
   }
 

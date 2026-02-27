@@ -29,7 +29,13 @@ export class MilestonesController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.milestones.create(body);
+    const item = await this.milestones.create({
+      tenant_id: body.tenant_id,
+      project_id: body.project_id,
+      name: body.name,
+      due_at: body.due_at,
+      status: body.status
+    });
     return { item };
   }
 

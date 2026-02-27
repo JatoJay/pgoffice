@@ -39,7 +39,16 @@ export class TasksController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.tasks.create(body);
+    const item = await this.tasks.create({
+      tenant_id: body.tenant_id,
+      project_id: body.project_id,
+      milestone_id: body.milestone_id,
+      name: body.name,
+      description: body.description,
+      status: body.status,
+      priority: body.priority,
+      due_at: body.due_at
+    });
     return { item };
   }
 

@@ -23,7 +23,13 @@ export class RelationshipsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.relationships.create(body);
+    const item = await this.relationships.create({
+      tenant_id: body.tenant_id,
+      source_profile_id: body.source_profile_id,
+      target_profile_id: body.target_profile_id,
+      type: body.type,
+      notes: body.notes
+    });
     return { item };
   }
 }

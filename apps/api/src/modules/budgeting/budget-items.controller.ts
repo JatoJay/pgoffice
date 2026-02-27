@@ -33,7 +33,16 @@ export class BudgetItemsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.budgetItems.create(body);
+    const item = await this.budgetItems.create({
+      tenant_id: body.tenant_id,
+      budget_id: body.budget_id,
+      cost_category_id: body.cost_category_id,
+      funding_source_id: body.funding_source_id,
+      description: body.description,
+      planned_amount: body.planned_amount,
+      actual_amount: body.actual_amount,
+      spent_at: body.spent_at
+    });
     return { item };
   }
 

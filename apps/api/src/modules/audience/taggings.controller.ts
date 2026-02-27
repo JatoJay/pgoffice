@@ -15,7 +15,11 @@ export class TaggingsController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.taggings.create(body);
+    const item = await this.taggings.create({
+      tenant_id: body.tenant_id,
+      tag_id: body.tag_id,
+      profile_id: body.profile_id
+    });
     return { item };
   }
 }
