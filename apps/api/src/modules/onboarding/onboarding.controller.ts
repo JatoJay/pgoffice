@@ -22,7 +22,18 @@ export class OnboardingController {
 
   @Post()
   async create(@Body(new ZodValidationPipe(createSchema)) body: z.infer<typeof createSchema>) {
-    const item = await this.onboarding.create(body);
+    const item = await this.onboarding.create({
+      organization_name: body.organization_name,
+      organization_slug: body.organization_slug,
+      instance_name: body.instance_name,
+      instance_slug: body.instance_slug,
+      subscription_tier: body.subscription_tier,
+      seat_limit: body.seat_limit,
+      user_limit: body.user_limit,
+      program_name: body.program_name,
+      admin_email: body.admin_email,
+      admin_name: body.admin_name
+    });
     return { item };
   }
 }
