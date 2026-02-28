@@ -75,7 +75,7 @@ export const Header = async () => {
       <div className="brand">
         <span className="brand-mark">PG</span>
         <div>
-          <p className="brand-label">PG MONITOR</p>
+          <p className="brand-label">pgarcotoffice</p>
           <p className="brand-subtitle">Impact Management Platform</p>
         </div>
       </div>

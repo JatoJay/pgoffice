@@ -22,7 +22,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <div className="login-logo">
               <div className="login-logo-mark">PG</div>
               <div className="login-logo-text">
-                <span className="login-logo-title">pgmonitor</span>
+                <span className="login-logo-title">pgarcotoffice</span>
                 <span className="login-logo-subtitle">Impact Management Platform</span>
               </div>
             </div>

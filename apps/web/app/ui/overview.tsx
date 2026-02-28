@@ -64,7 +64,7 @@ export const Overview = () => {
         <h1>Orchestrate programs with measurable outcomes.</h1>
         <p className="lede">
           Track engagement, relationships, budgets, and outcomes across every
-          program. PG MONITOR keeps the narrative and the numbers aligned.
+          program. pgarcotoffice keeps the narrative and the numbers aligned.
         </p>
         <div className="overview-actions">
           <Link className="action primary" href="/onboarding">

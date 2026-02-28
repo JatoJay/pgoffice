@@ -18,7 +18,7 @@ export default function OnboardingPage() {
           <div className="form-grid">
             <label>
               Organization name
-              <input name="organization_name" required placeholder="PG MONITOR Foundation" />
+              <input name="organization_name" required placeholder="pgarcotoffice Foundation" />
             </label>
             <label>
               Instance name
