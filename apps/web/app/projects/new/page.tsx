@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Header } from "../../ui/header";
 
 type GeneratedTask = {
   id: string;
@@ -113,8 +112,6 @@ export default function NewProjectPage() {
   };
 
   return (
-    <div className="app-shell">
-      <Header />
       <main className="page">
         <div className="page-header">
           <div>
@@ -292,6 +289,5 @@ export default function NewProjectPage() {
           </>
         )}
       </main>
-    </div>
   );
 }
