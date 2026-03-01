@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { RequestMethod } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "../src/app.module.js";
 import { ExpressAdapter } from "@nestjs/platform-express";
@@ -17,7 +18,12 @@ async function bootstrap() {
       origin: true,
       credentials: true
     });
-    app.setGlobalPrefix("api/v1");
+    app.setGlobalPrefix("api/v1", {
+      exclude: [
+        { path: "healthz", method: RequestMethod.GET },
+        { path: "db/health", method: RequestMethod.GET }
+      ]
+    });
     await app.init();
   }
   return server;
