@@ -40,15 +40,22 @@ export default async function InstancesPage() {
 
         <div className="list-grid">
           {data?.items?.map((instance) => (
-            <form key={instance.id} action={setActiveInstance} className="list-card">
+            <div key={instance.id} className="list-card">
               <strong>{instance.name ?? "Instance"}</strong>
               <span>ID: {instance.id}</span>
               <em>Tier: {instance.subscription_tier ?? "starter"}</em>
-              <input type="hidden" name="instance_id" value={instance.id} />
-              <button className="action" type="submit">
-                Set active
-              </button>
-            </form>
+              <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+                <form action={setActiveInstance}>
+                  <input type="hidden" name="instance_id" value={instance.id} />
+                  <button className="action" type="submit">
+                    Set active
+                  </button>
+                </form>
+                <a href={`/instances/${instance.id}/projects`} className="action primary">
+                  View Projects
+                </a>
+              </div>
+            </div>
           ))}
         </div>
 
