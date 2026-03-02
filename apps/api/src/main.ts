@@ -6,6 +6,10 @@ import { DatabaseService } from "./db/database.service.js";
 
 const bootstrap = async () => {
   const app = await NestFactory.create(AppModule, { logger: ["error", "warn", "log"] });
+  app.enableCors({
+    origin: true,
+    credentials: true
+  });
   app.setGlobalPrefix("api/v1", {
     exclude: [
       { path: "healthz", method: RequestMethod.GET },

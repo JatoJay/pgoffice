@@ -70,15 +70,20 @@ export class ProjectGeneratorController {
 
   @Post("generate")
   async generate(@Body(new ZodValidationPipe(generateSchema)) body: z.infer<typeof generateSchema>) {
-    const result = await this.generator.generateProject({
-      instance_id: body.instance_id,
-      name: body.name,
-      description: body.description,
-      start_at: body.start_at,
-      end_at: body.end_at,
-      location: body.location
-    });
-    return result;
+    try {
+      const result = await this.generator.generateProject({
+        instance_id: body.instance_id,
+        name: body.name,
+        description: body.description,
+        start_at: body.start_at,
+        end_at: body.end_at,
+        location: body.location
+      });
+      return result;
+    } catch (error) {
+      console.error("AI Project Generation Error:", error);
+      throw error;
+    }
   }
 
   @Get("instances/:instanceId/projects")

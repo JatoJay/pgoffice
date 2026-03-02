@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type GeneratedTask = {
   id: string;
@@ -111,183 +112,246 @@ export default function NewProjectPage() {
     }).format(amount);
   };
 
+  const statusColors: Record<string, { bg: string; color: string }> = {
+    todo: { bg: "rgba(156, 163, 175, 0.2)", color: "#9ca3af" },
+    pending: { bg: "rgba(234, 179, 8, 0.2)", color: "#eab308" },
+    in_progress: { bg: "rgba(59, 130, 246, 0.2)", color: "#3b82f6" },
+    done: { bg: "rgba(34, 197, 94, 0.2)", color: "#22c55e" },
+    completed: { bg: "rgba(34, 197, 94, 0.2)", color: "#22c55e" }
+  };
+
   return (
-      <main className="page">
-        <div className="page-header">
-          <div>
-            <p className="eyebrow">Projects</p>
-            <h1>Create AI-Powered Project</h1>
-            <p className="lede">
-              Enter your project details and let AI generate tasks and budget estimates.
-            </p>
-          </div>
+    <main className="page">
+      <div className="page-header">
+        <div>
+          <p className="eyebrow">
+            <Link href="/projects" style={{ color: "inherit", textDecoration: "none" }}>AI Projects</Link>
+            {" / "}
+            New
+          </p>
+          <h1>Create AI-Powered Project</h1>
+          <p className="lede">
+            Enter your project details and let AI generate tasks and budget estimates.
+          </p>
         </div>
+      </div>
 
-        {error && (
-          <div className="alert alert-error" style={{ marginBottom: "1rem", padding: "1rem", background: "#fee2e2", borderRadius: "8px", color: "#dc2626" }}>
-            {error}
-          </div>
-        )}
+      {error && (
+        <div style={{ marginBottom: "1rem", padding: "1rem", background: "rgba(239, 68, 68, 0.15)", borderRadius: "8px", color: "#ef4444", border: "1px solid rgba(239, 68, 68, 0.3)" }}>
+          {error}
+        </div>
+      )}
 
-        {step === "form" && (
-          <section className="detail-card">
-            <h3>Project Details</h3>
-            <form onSubmit={handleGenerate} className="form">
-              <div className="form-grid">
-                <label>
-                  Project Name *
-                  <input
-                    name="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Annual Tech Summit 2025"
-                    required
-                  />
-                </label>
-                <label>
-                  Location *
-                  <input
-                    name="location"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    placeholder="Convention Center, New York"
-                    required
-                  />
-                </label>
-                <label>
-                  Start Date *
-                  <input
-                    type="date"
-                    name="start_at"
-                    value={formData.start_at}
-                    onChange={(e) => setFormData({ ...formData, start_at: e.target.value })}
-                    required
-                  />
-                </label>
-                <label>
-                  End Date *
-                  <input
-                    type="date"
-                    name="end_at"
-                    value={formData.end_at}
-                    onChange={(e) => setFormData({ ...formData, end_at: e.target.value })}
-                    required
-                  />
-                </label>
-                <label style={{ gridColumn: "1 / -1" }}>
-                  Description *
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows={4}
-                    placeholder="Describe your project in detail. Include the type of event, expected attendees, key activities, and any special requirements..."
-                    required
-                  />
-                </label>
-              </div>
-              <button className="action primary" type="submit">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
-                Generate with AI
-              </button>
-            </form>
-          </section>
-        )}
-
-        {step === "generating" && (
-          <section className="detail-card" style={{ textAlign: "center", padding: "3rem" }}>
-            <div className="loading-spinner" style={{ marginBottom: "1rem" }}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}>
-                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-              </svg>
+      {step === "form" && (
+        <section className="detail-card">
+          <h3 style={{ color: "#fff", marginBottom: "1rem" }}>Project Details</h3>
+          <form onSubmit={handleGenerate} className="form">
+            <div className="form-grid">
+              <label>
+                <span style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem", display: "block" }}>Project Name *</span>
+                <input
+                  name="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Annual Tech Summit 2025"
+                  required
+                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", color: "#fff", padding: "0.75rem", borderRadius: "8px", width: "100%" }}
+                />
+              </label>
+              <label>
+                <span style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem", display: "block" }}>Location *</span>
+                <input
+                  name="location"
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  placeholder="Convention Center, New York"
+                  required
+                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", color: "#fff", padding: "0.75rem", borderRadius: "8px", width: "100%" }}
+                />
+              </label>
+              <label>
+                <span style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem", display: "block" }}>Start Date *</span>
+                <input
+                  type="date"
+                  name="start_at"
+                  value={formData.start_at}
+                  onChange={(e) => setFormData({ ...formData, start_at: e.target.value })}
+                  required
+                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", color: "#fff", padding: "0.75rem", borderRadius: "8px", width: "100%" }}
+                />
+              </label>
+              <label>
+                <span style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem", display: "block" }}>End Date *</span>
+                <input
+                  type="date"
+                  name="end_at"
+                  value={formData.end_at}
+                  onChange={(e) => setFormData({ ...formData, end_at: e.target.value })}
+                  required
+                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", color: "#fff", padding: "0.75rem", borderRadius: "8px", width: "100%" }}
+                />
+              </label>
+              <label style={{ gridColumn: "1 / -1" }}>
+                <span style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem", display: "block" }}>Description *</span>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={4}
+                  placeholder="Describe your project in detail. Include the type of event, expected attendees, key activities, and any special requirements..."
+                  required
+                  style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", color: "#fff", padding: "0.75rem", borderRadius: "8px", width: "100%", resize: "vertical" }}
+                />
+              </label>
             </div>
-            <h3>Generating Your Project Plan...</h3>
-            <p className="lede">AI is creating tasks and budget estimates based on your requirements.</p>
-            <style>{`
-              @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-              }
-            `}</style>
-          </section>
-        )}
+            <button
+              className="action primary"
+              type="submit"
+              style={{ background: "#22c55e", borderColor: "#22c55e", marginTop: "1rem" }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+              Generate with AI
+            </button>
+          </form>
+        </section>
+      )}
 
-        {step === "review" && generatedData && (
-          <>
-            <section className="detail-card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                <h3>Generated Tasks ({generatedData.tasks.length})</h3>
-                <span className="status-badge" style={{ background: "#dcfce7", color: "#166534" }}>AI Generated</span>
-              </div>
-              <p className="lede" style={{ marginBottom: "1rem" }}>
-                These tasks have been automatically generated based on your project description. You can edit them after saving.
-              </p>
-              <div className="list-grid">
-                {generatedData.tasks.map((task, index) => (
-                  <div key={task.id || index} className="list-card" style={{ cursor: "default" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                      <strong>{task.name}</strong>
-                      <span className="status-badge">{task.status}</span>
+      {step === "generating" && (
+        <section className="detail-card" style={{ textAlign: "center", padding: "4rem 2rem" }}>
+          <div style={{ marginBottom: "1.5rem" }}>
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}>
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+          </div>
+          <h3 style={{ color: "#fff", marginBottom: "0.5rem" }}>Generating Your Project Plan...</h3>
+          <p style={{ color: "#9ca3af" }}>AI is creating tasks and budget estimates based on your requirements.</p>
+          <style>{`
+            @keyframes spin {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </section>
+      )}
+
+      {step === "review" && generatedData && (
+        <>
+          <section className="detail-card" style={{ marginBottom: "1.5rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <h3 style={{ color: "#fff" }}>Generated Tasks ({generatedData.tasks.length})</h3>
+              <span style={{ background: "#22c55e", color: "#fff", padding: "0.25rem 0.75rem", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 600 }}>AI Generated</span>
+            </div>
+            <p style={{ color: "#9ca3af", marginBottom: "1.5rem" }}>
+              These tasks have been automatically generated based on your project description. You can edit them after saving.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {generatedData.tasks.map((task, index) => {
+                const statusStyle = statusColors[task.status] || statusColors.todo;
+                return (
+                  <div
+                    key={task.id || index}
+                    style={{
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      borderRadius: "12px",
+                      padding: "1rem",
+                      background: "rgba(255, 255, 255, 0.03)"
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+                      <strong style={{ color: "#fff" }}>{task.name}</strong>
+                      <span style={{ background: statusStyle.bg, color: statusStyle.color, padding: "0.125rem 0.5rem", borderRadius: "4px", fontSize: "0.75rem", textTransform: "capitalize" }}>
+                        {task.status.replace("_", " ")}
+                      </span>
                     </div>
-                    <em>{task.description}</em>
-                    <div style={{ display: "flex", gap: "1rem", marginTop: "0.5rem", fontSize: "0.875rem", color: "#6b7280" }}>
+                    <p style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem", lineHeight: 1.5 }}>{task.description}</p>
+                    <div style={{ display: "flex", gap: "1rem", fontSize: "0.875rem", color: "#9ca3af" }}>
                       {task.due_at && <span>Due: {new Date(task.due_at).toLocaleDateString()}</span>}
-                      {task.estimated_cost && <span>Est. Cost: {formatCurrency(task.estimated_cost)}</span>}
+                      {task.estimated_cost && <span style={{ color: "#22c55e" }}>Est: {formatCurrency(task.estimated_cost)}</span>}
                     </div>
                   </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="detail-card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                <h3>Budget Breakdown</h3>
-                <strong style={{ fontSize: "1.25rem", color: "#4f46e5" }}>
-                  Total: {formatCurrency(generatedData.project.total_budget)}
-                </strong>
-              </div>
-              <div className="table-container">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Category</th>
-                      <th>Description</th>
-                      <th style={{ textAlign: "right" }}>Estimated Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {generatedData.budget_items.map((item, index) => (
-                      <tr key={item.id || index}>
-                        <td><strong>{item.category}</strong></td>
-                        <td>{item.description}</td>
-                        <td style={{ textAlign: "right" }}>{formatCurrency(item.estimated_amount)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-            <div style={{ display: "flex", gap: "1rem", justifyContent: "flex-end", marginTop: "1rem" }}>
-              <button
-                className="action secondary"
-                onClick={() => {
-                  setStep("form");
-                  setGeneratedData(null);
-                }}
-              >
-                Start Over
-              </button>
-              <button className="action primary" onClick={handleSave}>
-                View Project
-              </button>
+                );
+              })}
             </div>
-          </>
-        )}
-      </main>
+          </section>
+
+          <section className="detail-card" style={{ marginBottom: "1.5rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+              <h3 style={{ color: "#fff" }}>Budget Breakdown</h3>
+              <strong style={{ fontSize: "1.25rem", color: "#22c55e" }}>
+                Total: {formatCurrency(generatedData.project.total_budget)}
+              </strong>
+            </div>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
+                    <th style={{ textAlign: "left", padding: "0.75rem 0.5rem", color: "#9ca3af", fontWeight: 600, fontSize: "0.875rem" }}>Category</th>
+                    <th style={{ textAlign: "left", padding: "0.75rem 0.5rem", color: "#9ca3af", fontWeight: 600, fontSize: "0.875rem" }}>Description</th>
+                    <th style={{ textAlign: "right", padding: "0.75rem 0.5rem", color: "#9ca3af", fontWeight: 600, fontSize: "0.875rem" }}>Estimated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {generatedData.budget_items.map((item, index) => (
+                    <tr key={item.id || index} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                      <td style={{ padding: "0.875rem 0.5rem", fontWeight: 500, color: "#fff" }}>{item.category}</td>
+                      <td style={{ padding: "0.875rem 0.5rem", color: "#9ca3af" }}>{item.description}</td>
+                      <td style={{ padding: "0.875rem 0.5rem", textAlign: "right", color: "#fff" }}>{formatCurrency(item.estimated_amount)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)" }}>
+                    <td colSpan={2} style={{ padding: "0.875rem 0.5rem", fontWeight: 600, color: "#fff" }}>Total</td>
+                    <td style={{ padding: "0.875rem 0.5rem", textAlign: "right", fontWeight: 600, color: "#22c55e" }}>
+                      {formatCurrency(generatedData.budget_items.reduce((sum, item) => sum + item.estimated_amount, 0))}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </section>
+
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "flex-end" }}>
+            <button
+              onClick={() => {
+                setStep("form");
+                setGeneratedData(null);
+              }}
+              style={{
+                padding: "0.75rem 1.5rem",
+                background: "rgba(255, 255, 255, 0.1)",
+                color: "#9ca3af",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                fontWeight: 500
+              }}
+            >
+              Start Over
+            </button>
+            <button
+              onClick={handleSave}
+              style={{
+                padding: "0.75rem 1.5rem",
+                background: "#22c55e",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                fontWeight: 500
+              }}
+            >
+              View Project
+            </button>
+          </div>
+        </>
+      )}
+    </main>
   );
 }

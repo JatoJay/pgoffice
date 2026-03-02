@@ -14,7 +14,7 @@ export default async function InstancesPage() {
     }
     const cookieStore = await cookies();
     cookieStore.set("pgm_tenant", instanceId, { path: "/", sameSite: "lax" });
-    redirect("/programs");
+    redirect("/projects");
   }
 
   return (
@@ -27,9 +27,6 @@ export default async function InstancesPage() {
             <h1>Active Instance</h1>
             <p className="lede">Pick which tenant to manage and create new modules for.</p>
           </div>
-          <a className="action primary sm" href="/onboarding">
-            New instance
-          </a>
         </div>
 
         {error ? <div className="empty">{error}</div> : null}

@@ -50,7 +50,7 @@ export class GeminiService {
   }
 
   async generateProjectPlan(input: ProjectGenerationInput): Promise<ProjectGenerationResult> {
-    const model = this.getClient().getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = this.getClient().getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const prompt = `You are a project planning assistant. Generate a detailed project itinerary (tasks) and budget breakdown for the following project.
 
@@ -116,7 +116,7 @@ Respond ONLY with valid JSON, no additional text.`;
   }
 
   async regenerateTasks(input: ProjectGenerationInput, existingTasks: string[]): Promise<GeneratedTask[]> {
-    const model = this.getClient().getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = this.getClient().getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const prompt = `You are a project planning assistant. Regenerate tasks for the following project, avoiding these existing tasks:
 
@@ -156,7 +156,7 @@ Generate 3-5 additional tasks. Respond ONLY with valid JSON array.`;
   }
 
   async regenerateBudget(input: ProjectGenerationInput): Promise<{ budget_items: GeneratedBudgetItem[]; total_budget: number }> {
-    const model = this.getClient().getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = this.getClient().getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const prompt = `You are a budget planning assistant. Generate a detailed budget breakdown for the following project:
 

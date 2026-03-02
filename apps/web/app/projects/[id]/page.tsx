@@ -99,10 +99,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const tasks = data?.tasks || [];
   const budgetItems = data?.budget_items || [];
 
+  const currency = project?.currency || "USD";
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: project?.currency || "USD"
+      currency
     }).format(amount);
   };
 
@@ -142,11 +143,11 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           </div>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {project?.ai_generated && (
-              <span style={{ background: "#dcfce7", color: "#166534", padding: "0.5rem 1rem", borderRadius: "6px", fontSize: "0.875rem" }}>
+              <span style={{ background: "#22c55e", color: "#fff", padding: "0.5rem 1rem", borderRadius: "6px", fontSize: "0.875rem", fontWeight: 500 }}>
                 AI Generated
               </span>
             )}
-            <span style={{ background: "#e0e7ff", color: "#3730a3", padding: "0.5rem 1rem", borderRadius: "6px", fontSize: "0.875rem", textTransform: "capitalize" }}>
+            <span style={{ background: "rgba(34, 197, 94, 0.15)", color: "#22c55e", padding: "0.5rem 1rem", borderRadius: "6px", fontSize: "0.875rem", textTransform: "capitalize", fontWeight: 500, border: "1px solid rgba(34, 197, 94, 0.3)" }}>
               {project?.status || "draft"}
             </span>
           </div>
@@ -160,30 +161,30 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
               <h3>Overview</h3>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.5rem", marginTop: "1rem" }}>
                 <div>
-                  <p style={{ color: "#6b7280", fontSize: "0.875rem", marginBottom: "0.25rem" }}>Total Budget</p>
-                  <strong style={{ fontSize: "1.5rem", color: "#4f46e5" }}>{formatCurrency(project.total_budget || totalBudget)}</strong>
+                  <p style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.25rem" }}>Total Budget</p>
+                  <strong style={{ fontSize: "1.75rem", color: "#22c55e" }}>{formatCurrency(project.total_budget || totalBudget)}</strong>
                 </div>
                 <div>
-                  <p style={{ color: "#6b7280", fontSize: "0.875rem", marginBottom: "0.25rem" }}>Estimated Task Costs</p>
-                  <strong style={{ fontSize: "1.5rem" }}>{formatCurrency(totalEstimatedCost)}</strong>
+                  <p style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.25rem" }}>Estimated Task Costs</p>
+                  <strong style={{ fontSize: "1.75rem", color: "#fff" }}>{formatCurrency(totalEstimatedCost)}</strong>
                 </div>
                 <div>
-                  <p style={{ color: "#6b7280", fontSize: "0.875rem", marginBottom: "0.25rem" }}>Tasks</p>
-                  <strong style={{ fontSize: "1.5rem" }}>{tasks.length}</strong>
+                  <p style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.25rem" }}>Tasks</p>
+                  <strong style={{ fontSize: "1.75rem", color: "#fff" }}>{tasks.length}</strong>
                 </div>
                 <div>
-                  <p style={{ color: "#6b7280", fontSize: "0.875rem", marginBottom: "0.25rem" }}>Budget Categories</p>
-                  <strong style={{ fontSize: "1.5rem" }}>{budgetItems.length}</strong>
+                  <p style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.25rem" }}>Budget Categories</p>
+                  <strong style={{ fontSize: "1.75rem", color: "#fff" }}>{budgetItems.length}</strong>
                 </div>
               </div>
               {project.description && (
-                <p style={{ marginTop: "1.5rem", color: "#374151" }}>{project.description}</p>
+                <p style={{ marginTop: "1.5rem", color: "#d1d5db", lineHeight: 1.6 }}>{project.description}</p>
               )}
             </section>
 
-            <TaskList tasks={tasks} projectId={id} tenantId={tenantId} formatCurrency={formatCurrency} />
+            <TaskList tasks={tasks} projectId={id} tenantId={tenantId} currency={currency} />
 
-            <BudgetTable budgetItems={budgetItems} formatCurrency={formatCurrency} totalBudget={project.total_budget || totalBudget} />
+            <BudgetTable budgetItems={budgetItems} currency={currency} totalBudget={project.total_budget || totalBudget} projectId={id} tenantId={tenantId} />
           </>
         )}
       </main>
