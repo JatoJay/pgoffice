@@ -9,6 +9,7 @@ import { OrganizationsModule } from "./modules/organizations/organizations.modul
 import { InstancesModule } from "./modules/instances/instances.module.js";
 import { ProjectsModule } from "./modules/projects/projects.module.js";
 import { AuthModule } from "./modules/auth/auth.module.js";
+import { DocumentsModule } from "./modules/documents/documents.module.js";
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { AuthModule } from "./modules/auth/auth.module.js";
     OrganizationsModule,
     InstancesModule,
     ProjectsModule,
-    AuthModule
+    AuthModule,
+    DocumentsModule
   ],
   controllers: [AppController],
   providers: [DataService, TenantMiddleware]

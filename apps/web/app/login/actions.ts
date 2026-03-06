@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/server";
 
 export async function loginAction(formData: FormData) {
+  console.log("[LOGIN] NEXT_PUBLIC_SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
   const supabase = await createClient();
 
   const email = String(formData.get("email") || "").trim();

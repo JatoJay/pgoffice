@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
 import { Header } from "../../ui/header";
 import { TaskList } from "./task-list";
 import { BudgetTable } from "./budget-table";
+import { db } from "@/app/lib/supabase/db";
 
 type Task = {
   id: string;
@@ -12,7 +12,7 @@ type Task = {
   priority: number;
   due_at: string | null;
   estimated_cost: number | null;
-  assigned_email: string | null;
+  assignee_email: string | null;
   order_index: number;
 };
 
@@ -37,53 +37,9 @@ type Project = {
   start_at: string | null;
   end_at: string | null;
   instance_id: string | null;
+  tenant_id: string;
   created_at: string;
 };
-
-type ProjectData = {
-  project: Project;
-  tasks: Task[];
-  budget_items: BudgetItem[];
-};
-
-async function getProjectData(id: string, tenantId: string): Promise<{ data: ProjectData | null; error: string | null }> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-  try {
-    const [projectRes, tasksRes, budgetRes] = await Promise.all([
-      fetch(`${apiUrl}/api/v1/ai-projects/${id}`, {
-        headers: { "x-tenant-id": tenantId, "x-super-admin": "true" },
-        cache: "no-store"
-      }),
-      fetch(`${apiUrl}/api/v1/ai-projects/${id}/tasks`, {
-        headers: { "x-tenant-id": tenantId, "x-super-admin": "true" },
-        cache: "no-store"
-      }),
-      fetch(`${apiUrl}/api/v1/ai-projects/${id}/budget-items`, {
-        headers: { "x-tenant-id": tenantId, "x-super-admin": "true" },
-        cache: "no-store"
-      })
-    ]);
-
-    if (!projectRes.ok) {
-      return { data: null, error: `Failed to fetch project: ${projectRes.status}` };
-    }
-
-    const project = await projectRes.json();
-    const tasks = tasksRes.ok ? await tasksRes.json() : { items: [] };
-    const budget = budgetRes.ok ? await budgetRes.json() : { items: [] };
-
-    return {
-      data: {
-        project: project.project || project,
-        tasks: tasks.items || tasks.tasks || [],
-        budget_items: budget.items || budget.budget_items || []
-      },
-      error: null
-    };
-  } catch (e) {
-    return { data: null, error: e instanceof Error ? e.message : "Failed to fetch project" };
-  }
-}
 
 interface ProjectPageProps {
   params: Promise<{ id: string }>;
@@ -91,13 +47,10 @@ interface ProjectPageProps {
 
 export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const { id } = await params;
-  const cookieStore = await cookies();
-  const tenantId = cookieStore.get("pgm_tenant")?.value || "";
 
-  const { data, error } = await getProjectData(id, tenantId);
-  const project = data?.project;
-  const tasks = data?.tasks || [];
-  const budgetItems = data?.budget_items || [];
+  const project = await db.projects.get(id);
+  const tasks = project ? await db.tasks.list(id) : [];
+  const budgetItems = project ? await db.budgetItems.list(id) : [];
 
   const currency = project?.currency || "USD";
   const formatCurrency = (amount: number) => {
@@ -141,7 +94,21 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
               {project?.start_at && project?.end_at && `${formatDate(project.start_at)} - ${formatDate(project.end_at)}`}
             </p>
           </div>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <Link
+              href={`/projects/${id}/documents`}
+              style={{
+                padding: "0.5rem 1rem",
+                background: "transparent",
+                color: "#9ca3af",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                borderRadius: "6px",
+                fontSize: "0.875rem",
+                textDecoration: "none"
+              }}
+            >
+              Documents
+            </Link>
             {project?.ai_generated && (
               <span style={{ background: "#22c55e", color: "#fff", padding: "0.5rem 1rem", borderRadius: "6px", fontSize: "0.875rem", fontWeight: 500 }}>
                 AI Generated
@@ -153,7 +120,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           </div>
         </div>
 
-        {error ? <div className="empty">{error}</div> : null}
+        {!project && <div className="empty">Project not found</div>}
 
         {project && (
           <>
@@ -182,9 +149,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
               )}
             </section>
 
-            <TaskList tasks={tasks} projectId={id} tenantId={tenantId} currency={currency} />
+            <TaskList tasks={tasks as Task[]} projectId={id} tenantId={project.tenant_id} currency={currency} />
 
-            <BudgetTable budgetItems={budgetItems} currency={currency} totalBudget={project.total_budget || totalBudget} projectId={id} tenantId={tenantId} />
+            <BudgetTable budgetItems={budgetItems as BudgetItem[]} currency={currency} totalBudget={project.total_budget || totalBudget} projectId={id} tenantId={project.tenant_id} />
           </>
         )}
       </main>

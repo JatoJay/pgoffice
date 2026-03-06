@@ -17,5 +17,18 @@ services:
     ports:
       - "6379:6379"
 
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    ports:
+      - "8080:80"
+    environment:
+      - JWT_ENABLED=true
+      - JWT_SECRET=pgmonitor_onlyoffice_secret
+    volumes:
+      - onlyoffice-data:/var/www/onlyoffice/Data
+      - onlyoffice-logs:/var/log/onlyoffice
+
 volumes:
   pgmonitor-db:
+  onlyoffice-data:
+  onlyoffice-logs:

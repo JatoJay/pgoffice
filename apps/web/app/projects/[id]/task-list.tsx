@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { updateTask, deleteTask, assignTask } from "@/app/actions/tasks";
+import { generateDocumentFromTask } from "@/app/actions/documents-generation";
 
 type Task = {
   id: string;
@@ -10,7 +12,7 @@ type Task = {
   priority: number;
   due_at: string | null;
   estimated_cost: number | null;
-  assigned_email: string | null;
+  assignee_email: string | null;
   order_index: number;
 };
 
@@ -21,7 +23,7 @@ type TaskListProps = {
   currency: string;
 };
 
-const statusOptions = ["todo", "pending", "in_progress", "done", "blocked"];
+const statusOptions = ["todo", "in_progress", "blocked", "done"];
 
 export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }: TaskListProps) {
   const formatCurrency = (amount: number) => {
@@ -38,8 +40,7 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const [generatingDocFor, setGeneratingDocFor] = useState<string | null>(null);
 
   const handleEdit = (task: Task) => {
     setEditingTaskId(task.id);
@@ -58,25 +59,16 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
     setError(null);
 
     try {
-      const res = await fetch(`${apiUrl}/api/v1/ai-projects/tasks/${taskId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-tenant-id": tenantId,
-          "x-super-admin": "true"
-        },
-        body: JSON.stringify({
-          name: editForm.name,
-          description: editForm.description,
-          status: editForm.status,
-          estimated_cost: editForm.estimated_cost ? Number(editForm.estimated_cost) : null,
-          due_at: editForm.due_at || null
-        })
+      const result = await updateTask(taskId, {
+        name: editForm.name,
+        description: editForm.description,
+        status: editForm.status as "todo" | "in_progress" | "blocked" | "done",
+        estimated_cost: editForm.estimated_cost ? Number(editForm.estimated_cost) : null,
+        due_at: editForm.due_at || null
       });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to update task: ${res.status}`);
+      if ("error" in result) {
+        throw new Error(result.error);
       }
 
       setTasks(tasks.map(t =>
@@ -104,23 +96,14 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
     setError(null);
 
     try {
-      const res = await fetch(`${apiUrl}/api/v1/ai-projects/tasks/${taskId}/assign`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-tenant-id": tenantId,
-          "x-super-admin": "true"
-        },
-        body: JSON.stringify({ email: assignEmail })
-      });
+      const result = await assignTask(taskId, assignEmail);
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to assign task: ${res.status}`);
+      if ("error" in result) {
+        throw new Error(result.error);
       }
 
       setTasks(tasks.map(t =>
-        t.id === taskId ? { ...t, assigned_email: assignEmail } : t
+        t.id === taskId ? { ...t, assignee_email: assignEmail } : t
       ));
 
       setSuccess(`Task assigned! Access link sent to ${assignEmail}`);
@@ -134,6 +117,27 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
     }
   };
 
+  const handleGenerateDocument = async (taskId: string) => {
+    setGeneratingDocFor(taskId);
+    setError(null);
+
+    try {
+      const result = await generateDocumentFromTask(taskId, projectId, tenantId);
+
+      if ("error" in result) {
+        throw new Error(result.error);
+      }
+
+      setSuccess("Document generated!");
+      setTimeout(() => setSuccess(null), 3000);
+      window.location.href = `/projects/${projectId}/documents/${result.document.id}`;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to generate document");
+    } finally {
+      setGeneratingDocFor(null);
+    }
+  };
+
   const handleDelete = async (taskId: string) => {
     if (!confirm("Are you sure you want to delete this task?")) return;
 
@@ -141,16 +145,10 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
     setError(null);
 
     try {
-      const res = await fetch(`${apiUrl}/api/v1/ai-projects/tasks/${taskId}`, {
-        method: "DELETE",
-        headers: {
-          "x-tenant-id": tenantId,
-          "x-super-admin": "true"
-        }
-      });
+      const result = await deleteTask(taskId);
 
-      if (!res.ok) {
-        throw new Error(`Failed to delete task: ${res.status}`);
+      if ("error" in result) {
+        throw new Error(result.error);
       }
 
       setTasks(tasks.filter(t => t.id !== taskId));
@@ -212,7 +210,7 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           {tasks.sort((a, b) => a.order_index - b.order_index).map((task) => {
-            const statusStyle = statusColors[task.status] || statusColors.pending;
+            const statusStyle = statusColors[task.status] || statusColors.todo;
             const isEditing = editingTaskId === task.id;
 
             return (
@@ -360,9 +358,9 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
                       {task.estimated_cost && (
                         <span>Est: {formatCurrency(task.estimated_cost)}</span>
                       )}
-                      {task.assigned_email && (
+                      {task.assignee_email && (
                         <span style={{ color: "#22c55e" }}>
-                          Assigned: {task.assigned_email}
+                          Assigned: {task.assignee_email}
                         </span>
                       )}
                     </div>
@@ -412,21 +410,36 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
                         </button>
                       </div>
                     ) : (
-                      <div style={{ marginTop: "0.75rem" }}>
+                      <div style={{ marginTop: "0.75rem", display: "flex", gap: "0.5rem" }}>
                         <button
                           onClick={() => { setAssigningTaskId(task.id); setEditingTaskId(null); }}
                           style={{
                             padding: "0.5rem 1rem",
-                            background: task.assigned_email ? "rgba(34, 197, 94, 0.15)" : "#22c55e",
-                            color: task.assigned_email ? "#22c55e" : "#fff",
-                            border: task.assigned_email ? "1px solid rgba(34, 197, 94, 0.3)" : "none",
+                            background: task.assignee_email ? "rgba(34, 197, 94, 0.15)" : "#22c55e",
+                            color: task.assignee_email ? "#22c55e" : "#fff",
+                            border: task.assignee_email ? "1px solid rgba(34, 197, 94, 0.3)" : "none",
                             borderRadius: "6px",
                             cursor: "pointer",
                             fontSize: "0.875rem",
                             fontWeight: 500
                           }}
                         >
-                          {task.assigned_email ? "Reassign" : "Assign Task"}
+                          {task.assignee_email ? "Reassign" : "Assign Task"}
+                        </button>
+                        <button
+                          onClick={() => handleGenerateDocument(task.id)}
+                          disabled={generatingDocFor === task.id}
+                          style={{
+                            padding: "0.5rem 1rem",
+                            background: "transparent",
+                            color: "#9ca3af",
+                            border: "1px solid rgba(255, 255, 255, 0.1)",
+                            borderRadius: "6px",
+                            cursor: generatingDocFor === task.id ? "wait" : "pointer",
+                            fontSize: "0.875rem"
+                          }}
+                        >
+                          {generatingDocFor === task.id ? "Generating..." : "Generate Doc"}
                         </button>
                       </div>
                     )}

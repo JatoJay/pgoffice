@@ -192,4 +192,11 @@ Respond ONLY with valid JSON.`;
 
     return JSON.parse(jsonMatch[0]);
   }
+
+  async generateText(prompt: string): Promise<string> {
+    const model = this.getClient().getGenerativeModel({ model: "gemini-2.0-flash" });
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    return response.text();
+  }
 }

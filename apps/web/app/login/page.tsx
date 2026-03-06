@@ -1,4 +1,5 @@
 import { loginAction, registerAction } from "./actions";
+import { PasswordInput } from "./password-input";
 
 interface LoginPageProps {
   searchParams: Promise<{ mode?: string; error?: string; message?: string }>;
@@ -96,24 +97,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 </div>
               </div>
 
-              <div className="login-field">
-                <label htmlFor="password">Password</label>
-                <div className="login-input-wrapper">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <rect x="3" y="9" width="14" height="9" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                    <path d="M6 9V6a4 4 0 018 0v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                    <circle cx="10" cy="13" r="1.5" fill="currentColor"/>
-                  </svg>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="••••••••"
-                    autoComplete={isRegister ? "new-password" : "current-password"}
-                    required
-                  />
-                </div>
-              </div>
+              <PasswordInput isRegister={isRegister} />
 
               <button className="login-submit" type="submit">
                 <span>{isRegister ? "Create Account" : "Sign In"}</span>

@@ -1972,8 +1972,32 @@ select {
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
 }
 
-.login-input-wrapper:focus-within svg {
+.login-input-wrapper:focus-within svg:first-child {
   color: var(--accent-strong);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  pointer-events: auto;
+}
+
+.password-toggle:hover {
+  color: var(--ink);
+}
+
+.password-toggle svg {
+  position: static;
+  pointer-events: auto;
 }
 
 .login-submit {
