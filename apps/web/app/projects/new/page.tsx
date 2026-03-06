@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { generateProject } from "@/app/actions/ai-projects";
 
 type GeneratedTask = {
   id: string;
@@ -65,32 +66,15 @@ export default function NewProjectPage() {
         throw new Error("No active instance selected. Please select an instance first.");
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/v1/ai-projects/generate`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-tenant-id": tenantId,
-            "x-super-admin": "true"
-          },
-          body: JSON.stringify({
-            instance_id: tenantId,
-            name: formData.name,
-            description: formData.description,
-            start_at: formData.start_at,
-            end_at: formData.end_at,
-            location: formData.location
-          })
-        }
-      );
+      const data = await generateProject({
+        instance_id: tenantId,
+        name: formData.name,
+        description: formData.description,
+        start_at: formData.start_at,
+        end_at: formData.end_at,
+        location: formData.location
+      });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to generate project: ${response.status}`);
-      }
-
-      const data = await response.json();
       setGeneratedData(data);
       setStep("review");
     } catch (err) {
