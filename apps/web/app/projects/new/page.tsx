@@ -8,30 +8,30 @@ import { generateProject } from "@/app/actions/ai-projects";
 type GeneratedTask = {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   status: string;
   priority: number;
   due_at: string | null;
   estimated_cost: number | null;
-  order_index: number;
+  order_index: number | null;
 };
 
 type GeneratedBudgetItem = {
   id: string;
   category: string;
-  description: string;
+  description: string | null;
   estimated_amount: number;
-  order_index: number;
+  order_index: number | null;
 };
 
 type GeneratedProject = {
   project: {
     id: string;
     name: string;
-    description: string;
-    location: string;
-    total_budget: number;
-    currency: string;
+    description: string | null;
+    location: string | null;
+    total_budget: number | null;
+    currency: string | null;
   };
   tasks: GeneratedTask[];
   budget_items: GeneratedBudgetItem[];
@@ -89,11 +89,11 @@ export default function NewProjectPage() {
     }
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | null) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD"
-    }).format(amount);
+    }).format(amount ?? 0);
   };
 
   const statusColors: Record<string, { bg: string; color: string }> = {

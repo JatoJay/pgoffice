@@ -61,7 +61,7 @@ export function TaskList({ tasks: initialTasks, projectId, tenantId, currency }:
     try {
       const result = await updateTask(taskId, {
         name: editForm.name,
-        description: editForm.description,
+        description: editForm.description ?? undefined,
         status: editForm.status as "todo" | "in_progress" | "blocked" | "done",
         estimated_cost: editForm.estimated_cost ? Number(editForm.estimated_cost) : null,
         due_at: editForm.due_at || null
