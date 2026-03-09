@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import * as crypto from "crypto";
 import * as fs from "fs/promises";
 import * as path from "path";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 
 const JWT_SECRET = process.env.ONLYOFFICE_JWT_SECRET || "pgmonitor_onlyoffice_secret";
 const ONLYOFFICE_URL = process.env.ONLYOFFICE_URL || "http://localhost:8080";
@@ -132,5 +133,87 @@ export class OnlyofficeService {
       throw new Error(`Failed to download file: ${response.status}`);
     }
     return Buffer.from(await response.arrayBuffer());
+  }
+
+  async markdownToDocx(markdownContent: string, title: string): Promise<Buffer> {
+    const lines = markdownContent.split("\n");
+    const children: Paragraph[] = [];
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        children.push(new Paragraph({}));
+        continue;
+      }
+
+      if (trimmed.startsWith("# ")) {
+        children.push(new Paragraph({
+          text: trimmed.substring(2),
+          heading: HeadingLevel.HEADING_1
+        }));
+      } else if (trimmed.startsWith("## ")) {
+        children.push(new Paragraph({
+          text: trimmed.substring(3),
+          heading: HeadingLevel.HEADING_2
+        }));
+      } else if (trimmed.startsWith("### ")) {
+        children.push(new Paragraph({
+          text: trimmed.substring(4),
+          heading: HeadingLevel.HEADING_3
+        }));
+      } else if (trimmed.startsWith("#### ")) {
+        children.push(new Paragraph({
+          text: trimmed.substring(5),
+          heading: HeadingLevel.HEADING_4
+        }));
+      } else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+        children.push(new Paragraph({
+          text: trimmed.substring(2),
+          bullet: { level: 0 }
+        }));
+      } else if (/^\d+\.\s/.test(trimmed)) {
+        const text = trimmed.replace(/^\d+\.\s/, "");
+        children.push(new Paragraph({
+          text,
+          numbering: { reference: "default-numbering", level: 0 }
+        }));
+      } else if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+        children.push(new Paragraph({
+          children: [new TextRun({ text: trimmed.slice(2, -2), bold: true })]
+        }));
+      } else {
+        children.push(new Paragraph({ text: trimmed }));
+      }
+    }
+
+    const doc = new Document({
+      title,
+      numbering: {
+        config: [{
+          reference: "default-numbering",
+          levels: [{
+            level: 0,
+            format: "decimal",
+            text: "%1.",
+            alignment: "start"
+          }]
+        }]
+      },
+      sections: [{ children }]
+    });
+
+    return Buffer.from(await Packer.toBuffer(doc));
+  }
+
+  async createDocxFromMarkdown(
+    tenantId: string,
+    documentId: string,
+    title: string,
+    markdownContent: string
+  ): Promise<{ filePath: string; fileName: string; fileSize: number }> {
+    const buffer = await this.markdownToDocx(markdownContent, title);
+    const fileName = `${title.replace(/[^a-zA-Z0-9-_ ]/g, "")}.docx`;
+    const filePath = await this.saveFile(tenantId, documentId, fileName, buffer);
+    return { filePath, fileName, fileSize: buffer.length };
   }
 }

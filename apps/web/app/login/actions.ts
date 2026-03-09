@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/server";
+import { ensureDefaultInstance } from "@/app/actions/instance";
 
 export async function loginAction(formData: FormData) {
   console.log("[LOGIN] NEXT_PUBLIC_SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
@@ -10,13 +11,17 @@ export async function loginAction(formData: FormData) {
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
   if (error) {
     redirect(`/login?error=${encodeURIComponent(error.message)}`);
+  }
+
+  if (data.user) {
+    await ensureDefaultInstance(data.user.id, data.user.email || email);
   }
 
   redirect("/");

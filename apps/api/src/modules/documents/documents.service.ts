@@ -2,6 +2,7 @@ import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { DatabaseService } from "../../db/database.service.js";
 import { RequestContextService } from "../../common/request-context.service.js";
 import { GeminiService } from "../ai/gemini.service.js";
+import { OnlyofficeService } from "./onlyoffice.service.js";
 
 export type DocumentRow = {
   id: string;
@@ -40,7 +41,8 @@ export class DocumentsService {
   constructor(
     @Inject(DatabaseService) private readonly db: DatabaseService,
     @Inject(RequestContextService) private readonly context: RequestContextService,
-    @Inject(GeminiService) private readonly gemini: GeminiService
+    @Inject(GeminiService) private readonly gemini: GeminiService,
+    @Inject(OnlyofficeService) private readonly onlyoffice: OnlyofficeService
   ) {}
 
   private resolveTenantId(inputTenantId?: string | null) {
@@ -230,15 +232,30 @@ Create a comprehensive document that includes:
 Make it professional and actionable.`;
 
     const content = await this.gemini.generateText(prompt);
+    const title = `${task.name} - Project Document`;
 
-    return this.createDocument({
+    const document = await this.createDocument({
       project_id: projectId,
       task_id: taskId,
-      title: `${task.name} - Project Document`,
+      title,
       content,
-      content_type: "markdown",
+      content_type: "docx",
       ai_generated: true
     });
+
+    const fileData = await this.onlyoffice.createDocxFromMarkdown(
+      tenantId,
+      document.id,
+      title,
+      content
+    );
+
+    return this.updateDocumentFile(document.id, {
+      file_path: fileData.filePath,
+      file_name: fileData.fileName,
+      file_size: fileData.fileSize,
+      mime_type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    }) as Promise<DocumentRow>;
   }
 
   async generateProjectSummaryDocument(projectId: string): Promise<DocumentRow> {
@@ -312,13 +329,28 @@ Create a professional project summary document that includes:
 Make it suitable for stakeholder review.`;
 
     const content = await this.gemini.generateText(prompt);
+    const title = `${project.name} - Project Summary`;
 
-    return this.createDocument({
+    const document = await this.createDocument({
       project_id: projectId,
-      title: `${project.name} - Project Summary`,
+      title,
       content,
-      content_type: "markdown",
+      content_type: "docx",
       ai_generated: true
     });
+
+    const fileData = await this.onlyoffice.createDocxFromMarkdown(
+      tenantId,
+      document.id,
+      title,
+      content
+    );
+
+    return this.updateDocumentFile(document.id, {
+      file_path: fileData.filePath,
+      file_name: fileData.fileName,
+      file_size: fileData.fileSize,
+      mime_type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    }) as Promise<DocumentRow>;
   }
 }

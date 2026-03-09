@@ -38,16 +38,12 @@ type DocumentEditorProps = {
 
 export function DocumentEditor({ document: initialDoc, versions, projectId, tenantId }: DocumentEditorProps) {
   const [doc, setDoc] = useState(initialDoc);
-  const [title, setTitle] = useState(initialDoc.title);
-  const [content, setContent] = useState(initialDoc.content);
   const [status, setStatus] = useState(initialDoc.status);
-  const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showVersions, setShowVersions] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState<DocumentVersion | null>(null);
-  const [editorMode, setEditorMode] = useState<"markdown" | "file">(initialDoc.file_path ? "file" : "markdown");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -71,37 +67,6 @@ export function DocumentEditor({ document: initialDoc, versions, projectId, tena
       i++;
     }
     return `${bytes.toFixed(1)} ${units[i]}`;
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    setError(null);
-
-    try {
-      const res = await fetch(`${apiUrl}/api/v1/documents/${doc.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-tenant-id": tenantId,
-          "x-super-admin": "true"
-        },
-        body: JSON.stringify({ title, content, status })
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || `Failed to save: ${res.status}`);
-      }
-
-      const { document: updatedDoc } = await res.json();
-      setDoc(updatedDoc);
-      setSuccess("Document saved");
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to save");
-    } finally {
-      setSaving(false);
-    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,8 +96,6 @@ export function DocumentEditor({ document: initialDoc, versions, projectId, tena
 
       const { document: updatedDoc } = await res.json();
       setDoc(updatedDoc);
-      setTitle(updatedDoc.title);
-      setEditorMode("file");
       setSuccess("File uploaded successfully");
       setTimeout(() => setSuccess(null), 3000);
     } catch (e) {
@@ -145,21 +108,21 @@ export function DocumentEditor({ document: initialDoc, versions, projectId, tena
     }
   };
 
-  const handleRestoreVersion = (version: DocumentVersion) => {
-    setTitle(version.title);
-    setContent(version.content);
-    setSelectedVersion(null);
-    setShowVersions(false);
-  };
-
-  const inputStyle = {
-    width: "100%",
-    padding: "0.75rem",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
-    borderRadius: "8px",
-    fontSize: "1rem",
-    background: "rgba(255, 255, 255, 0.05)",
-    color: "#fff"
+  const handleStatusChange = async (newStatus: string) => {
+    setStatus(newStatus);
+    try {
+      await fetch(`${apiUrl}/api/v1/documents/${doc.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-tenant-id": tenantId,
+          "x-super-admin": "true"
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to update status");
+    }
   };
 
   return (
@@ -180,23 +143,6 @@ export function DocumentEditor({ document: initialDoc, versions, projectId, tena
         <section className="detail-card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "0.75rem" }}>
             <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-              {editorMode === "markdown" && (
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  style={{
-                    padding: "0.75rem 1.5rem",
-                    background: saving ? "rgba(34, 197, 94, 0.5)" : "#22c55e",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: saving ? "wait" : "pointer",
-                    fontWeight: 500
-                  }}
-                >
-                  {saving ? "Saving..." : "Save"}
-                </button>
-              )}
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
@@ -233,41 +179,9 @@ export function DocumentEditor({ document: initialDoc, versions, projectId, tena
               </button>
             </div>
             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-              {doc.file_path && (
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <button
-                    onClick={() => setEditorMode("markdown")}
-                    style={{
-                      padding: "0.5rem 1rem",
-                      background: editorMode === "markdown" ? "rgba(34, 197, 94, 0.15)" : "transparent",
-                      color: editorMode === "markdown" ? "#22c55e" : "#9ca3af",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                      borderRadius: "6px 0 0 6px",
-                      cursor: "pointer",
-                      fontSize: "0.875rem"
-                    }}
-                  >
-                    Markdown
-                  </button>
-                  <button
-                    onClick={() => setEditorMode("file")}
-                    style={{
-                      padding: "0.5rem 1rem",
-                      background: editorMode === "file" ? "rgba(34, 197, 94, 0.15)" : "transparent",
-                      color: editorMode === "file" ? "#22c55e" : "#9ca3af",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
-                      borderRadius: "0 6px 6px 0",
-                      cursor: "pointer",
-                      fontSize: "0.875rem"
-                    }}
-                  >
-                    Office Editor
-                  </button>
-                </div>
-              )}
               <select
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                onChange={(e) => handleStatusChange(e.target.value)}
                 style={{
                   padding: "0.5rem 1rem",
                   background: "rgba(255, 255, 255, 0.05)",
@@ -284,7 +198,7 @@ export function DocumentEditor({ document: initialDoc, versions, projectId, tena
             </div>
           </div>
 
-          {doc.file_path && editorMode === "file" && (
+          {doc.file_path && (
             <div style={{ marginBottom: "1rem", padding: "0.75rem", background: "rgba(255, 255, 255, 0.05)", borderRadius: "8px" }}>
               <p style={{ color: "#9ca3af", fontSize: "0.875rem", margin: 0 }}>
                 <strong style={{ color: "#fff" }}>{doc.file_name}</strong> ({formatFileSize(doc.file_size)})
@@ -292,40 +206,11 @@ export function DocumentEditor({ document: initialDoc, versions, projectId, tena
             </div>
           )}
 
-          {editorMode === "markdown" ? (
-            <>
-              <div style={{ marginBottom: "1rem" }}>
-                <label style={{ display: "block", color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem" }}>Title</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
-
-              <div>
-                <label style={{ display: "block", color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem" }}>Content (Markdown)</label>
-                <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows={25}
-                  style={{
-                    ...inputStyle,
-                    fontFamily: "monospace",
-                    lineHeight: 1.6,
-                    resize: "vertical"
-                  }}
-                />
-              </div>
-            </>
-          ) : (
-            <OnlyofficeEditor
-              documentId={doc.id}
-              tenantId={tenantId}
-              apiUrl={apiUrl}
-            />
-          )}
+          <OnlyofficeEditor
+            documentId={doc.id}
+            tenantId={tenantId}
+            apiUrl={apiUrl}
+          />
         </section>
       </div>
 
@@ -350,24 +235,6 @@ export function DocumentEditor({ document: initialDoc, versions, projectId, tena
                 >
                   <p style={{ color: "#fff", fontWeight: 500, fontSize: "0.875rem" }}>Version {v.version}</p>
                   <p style={{ color: "#6b7280", fontSize: "0.75rem" }}>{formatDate(v.created_at)}</p>
-                  {selectedVersion?.id === v.id && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleRestoreVersion(v); }}
-                      style={{
-                        marginTop: "0.5rem",
-                        padding: "0.375rem 0.75rem",
-                        background: "#22c55e",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        fontSize: "0.75rem",
-                        width: "100%"
-                      }}
-                    >
-                      Restore this version
-                    </button>
-                  )}
                 </div>
               ))}
             </div>

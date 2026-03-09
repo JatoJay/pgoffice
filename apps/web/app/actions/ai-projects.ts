@@ -105,6 +105,8 @@ function calculateDueDate(
   return taskDueDate.toISOString();
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function generateProject(input: {
   instance_id: string;
   name: string;
@@ -113,6 +115,10 @@ export async function generateProject(input: {
   end_at: string;
   location: string;
 }) {
+  if (!input.instance_id || !UUID_REGEX.test(input.instance_id)) {
+    throw new Error("Invalid instance ID. Please select a valid instance first.");
+  }
+
   const generated = await generateProjectPlan({
     name: input.name,
     description: input.description,
