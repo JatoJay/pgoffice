@@ -1,11 +1,11 @@
 import Link from "next/link";
 
-const modules = [
+const features = [
   {
-    title: "Experience Builder",
-    description: "Design journeys, phases, and module activations.",
-    meta: "4 active journeys",
-    href: "/programs",
+    title: "AI Project Generation",
+    description: "Create complete projects with tasks and budgets using AI.",
+    meta: "Powered by Gemini",
+    href: "/projects/new",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
@@ -14,9 +14,9 @@ const modules = [
     color: "accent"
   },
   {
-    title: "Projects & Tasks",
-    description: "Track milestones and execution commitments.",
-    meta: "86 tasks in motion",
+    title: "Project Management",
+    description: "Track milestones, tasks, and execution commitments.",
+    meta: "Full lifecycle tracking",
     href: "/projects",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -26,71 +26,10 @@ const modules = [
     color: "success"
   },
   {
-    title: "Events",
-    description: "Coordinate sessions, attendance, and feedback.",
-    meta: "12 upcoming",
-    href: "/events",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-      </svg>
-    ),
-    color: "tertiary"
-  },
-  {
-    title: "Budgeting",
-    description: "Align spend with outcomes and ROI.",
-    meta: "$480k tracked",
-    href: "/budgets",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8M8 14h8"/>
-      </svg>
-    ),
-    color: "warning"
-  },
-  {
-    title: "Network",
-    description: "Manage relationships, profiles, and segmentation.",
-    meta: "1,284 profiles",
-    href: "/network",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/>
-        <path d="M12 8v4M8.5 16.5L12 12M15.5 16.5L12 12"/>
-      </svg>
-    ),
-    color: "accent"
-  },
-  {
-    title: "Connections",
-    description: "Match mentors, peers, and partners.",
-    meta: "62 matches",
-    href: "/connections",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-      </svg>
-    ),
-    color: "secondary"
-  },
-  {
-    title: "Pipeline",
-    description: "Track opportunities and commitments.",
-    meta: "$1.8M pipeline",
-    href: "/pipelines",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-      </svg>
-    ),
-    color: "success"
-  },
-  {
-    title: "Surveys",
-    description: "Capture sentiment and qualitative metrics.",
-    meta: "3 active surveys",
-    href: "/surveys",
+    title: "Document Generation",
+    description: "AI-generated project documents with OnlyOffice editing.",
+    meta: "Word, Excel, PowerPoint",
+    href: "/projects",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
@@ -99,13 +38,37 @@ const modules = [
     color: "tertiary"
   },
   {
-    title: "KPIs & Impact",
-    description: "Configure and monitor success metrics.",
-    meta: "18 KPIs",
-    href: "/kpis",
+    title: "Budget Tracking",
+    description: "Manage project budgets and track expenses.",
+    meta: "Real-time insights",
+    href: "/projects",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/>
+        <circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8M8 14h8"/>
+      </svg>
+    ),
+    color: "warning"
+  },
+  {
+    title: "Task Management",
+    description: "Create, assign, and track tasks within projects.",
+    meta: "Drag-and-drop ordering",
+    href: "/projects",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/>
+      </svg>
+    ),
+    color: "secondary"
+  },
+  {
+    title: "Multi-Instance",
+    description: "Manage multiple organizations from one account.",
+    meta: "Team collaboration",
+    href: "/instances",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
       </svg>
     ),
     color: "accent"
@@ -133,36 +96,36 @@ export const ModulesGrid = () => {
     <section className="modules">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Modules</p>
-          <h2>Everything a movement needs to grow.</h2>
+          <p className="eyebrow">Features</p>
+          <h2>Everything you need to manage projects.</h2>
         </div>
-        <button className="action ghost">
+        <Link href="/projects/new" className="action primary">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            <path d="M12 5v14M5 12h14"/>
           </svg>
-          Customize modules
-        </button>
+          New AI Project
+        </Link>
       </div>
       <div className="modules-grid">
-        {modules.map((module, index) => (
+        {features.map((feature, index) => (
           <Link
-            key={module.title}
-            href={module.href}
+            key={feature.title}
+            href={feature.href}
             className="module-card"
             style={{ animationDelay: `${index * 0.05}s` }}
           >
             <div
               className="module-icon"
               style={{
-                background: colorMap[module.color],
-                color: iconColorMap[module.color]
+                background: colorMap[feature.color],
+                color: iconColorMap[feature.color]
               }}
             >
-              {module.icon}
+              {feature.icon}
             </div>
-            <h3>{module.title}</h3>
-            <p>{module.description}</p>
-            <span>{module.meta}</span>
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
+            <span>{feature.meta}</span>
           </Link>
         ))}
       </div>
