@@ -10,6 +10,7 @@ import { InstancesModule } from "./modules/instances/instances.module.js";
 import { ProjectsModule } from "./modules/projects/projects.module.js";
 import { AuthModule } from "./modules/auth/auth.module.js";
 import { DocumentsModule } from "./modules/documents/documents.module.js";
+import { UsersModule } from "./modules/users/users.module.js";
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { DocumentsModule } from "./modules/documents/documents.module.js";
     InstancesModule,
     ProjectsModule,
     AuthModule,
-    DocumentsModule
+    DocumentsModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [DataService, TenantMiddleware]
