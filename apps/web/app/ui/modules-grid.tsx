@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const features = [
   {
     title: "AI Project Generation",
