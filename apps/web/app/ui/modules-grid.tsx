@@ -1,11 +1,8 @@
-import Link from "next/link";
-
 const features = [
   {
     title: "AI Project Generation",
     description: "Create complete projects with tasks and budgets using AI.",
     meta: "Powered by Gemini",
-    href: "/projects/new",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
@@ -17,7 +14,6 @@ const features = [
     title: "Project Management",
     description: "Track milestones, tasks, and execution commitments.",
     meta: "Full lifecycle tracking",
-    href: "/projects",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
@@ -29,7 +25,6 @@ const features = [
     title: "Document Generation",
     description: "AI-generated project documents with OnlyOffice editing.",
     meta: "Word, Excel, PowerPoint",
-    href: "/projects",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
@@ -41,7 +36,6 @@ const features = [
     title: "Budget Tracking",
     description: "Manage project budgets and track expenses.",
     meta: "Real-time insights",
-    href: "/projects",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10h8M8 14h8"/>
@@ -53,7 +47,6 @@ const features = [
     title: "Task Management",
     description: "Create, assign, and track tasks within projects.",
     meta: "Drag-and-drop ordering",
-    href: "/projects",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/>
@@ -65,7 +58,6 @@ const features = [
     title: "Multi-Instance",
     description: "Manage multiple organizations from one account.",
     meta: "Team collaboration",
-    href: "/instances",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
@@ -108,9 +100,8 @@ export const ModulesGrid = () => {
       </div>
       <div className="modules-grid">
         {features.map((feature, index) => (
-          <Link
+          <div
             key={feature.title}
-            href={feature.href}
             className="module-card"
             style={{ animationDelay: `${index * 0.05}s` }}
           >
@@ -126,7 +117,7 @@ export const ModulesGrid = () => {
             <h3>{feature.title}</h3>
             <p>{feature.description}</p>
             <span>{feature.meta}</span>
-          </Link>
+          </div>
         ))}
       </div>
     </section>
