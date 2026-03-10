@@ -4,25 +4,31 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 
-const JWT_SECRET = process.env.ONLYOFFICE_JWT_SECRET || "pgmonitor_onlyoffice_secret";
-const ONLYOFFICE_URL = process.env.ONLYOFFICE_URL || "http://localhost:8080";
 const STORAGE_PATH = process.env.DOCUMENT_STORAGE_PATH || "./uploads/documents";
 
 @Injectable()
 export class OnlyofficeService {
+  private getJwtSecret(): string {
+    return process.env.ONLYOFFICE_JWT_SECRET || "pgmonitor_onlyoffice_secret";
+  }
+
+  private isJwtEnabled(): boolean {
+    return process.env.ONLYOFFICE_JWT_ENABLED !== "false";
+  }
+
   async ensureStorageDir(): Promise<void> {
     await fs.mkdir(STORAGE_PATH, { recursive: true });
   }
 
   getDocumentServerUrl(): string {
-    return ONLYOFFICE_URL;
+    return process.env.ONLYOFFICE_URL || "http://localhost";
   }
 
   createJwtToken(payload: object): string {
     const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
     const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
     const signature = crypto
-      .createHmac("sha256", JWT_SECRET)
+      .createHmac("sha256", this.getJwtSecret())
       .update(`${header}.${body}`)
       .digest("base64url");
     return `${header}.${body}.${signature}`;
@@ -34,7 +40,7 @@ export class OnlyofficeService {
       if (parts.length !== 3) return null;
       const [header, body, signature] = parts;
       const expectedSignature = crypto
-        .createHmac("sha256", JWT_SECRET)
+        .createHmac("sha256", this.getJwtSecret())
         .update(`${header}.${body}`)
         .digest("base64url");
       if (signature !== expectedSignature) return null;
@@ -85,8 +91,11 @@ export class OnlyofficeService {
       },
     };
 
-    const token = this.createJwtToken(config);
-    return { ...config, token };
+    if (this.isJwtEnabled()) {
+      const token = this.createJwtToken(config);
+      return { ...config, token };
+    }
+    return config;
   }
 
   getDocumentType(ext: string): "word" | "cell" | "slide" {

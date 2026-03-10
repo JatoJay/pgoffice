@@ -75,6 +75,14 @@ export class DocumentsService {
     return result.rows[0] || null;
   }
 
+  async getDocumentById(id: string): Promise<DocumentRow | null> {
+    const result = await this.db.query<DocumentRow>(
+      `SELECT * FROM documents WHERE id = $1`,
+      [id]
+    );
+    return result.rows[0] || null;
+  }
+
   async createDocument(data: {
     project_id: string;
     task_id?: string;

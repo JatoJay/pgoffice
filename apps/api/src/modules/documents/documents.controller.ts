@@ -54,7 +54,7 @@ export class DocumentsController {
 
     const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
     const baseUrl = `${protocol}://${host}`;
-    const apiUrl = process.env.API_URL || baseUrl;
+    const apiUrl = process.env.ONLYOFFICE_CALLBACK_URL || process.env.API_URL || baseUrl;
 
     const config = this.onlyoffice.getEditorConfig({
       documentId: id,
@@ -74,7 +74,7 @@ export class DocumentsController {
 
   @Get(":id/download")
   async downloadDocument(@Param("id") id: string, @Res() res: Response) {
-    const document = await this.documentsService.getDocument(id);
+    const document = await this.documentsService.getDocumentById(id);
     if (!document || !document.file_path) {
       res.status(404).json({ error: "Document not found" });
       return;
