@@ -50,6 +50,39 @@ export default function NewProjectPage() {
     end_at: "",
     location: ""
   });
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [fileContent, setFileContent] = useState<string>("");
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAttachedFile(file);
+
+    if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+      const text = await file.text();
+      setFileContent(text);
+    } else {
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await fetch("/api/parse-document", {
+          method: "POST",
+          body: formData
+        });
+        if (res.ok) {
+          const { content } = await res.json();
+          setFileContent(content);
+        } else {
+          setError("Failed to parse document");
+          setAttachedFile(null);
+        }
+      } catch {
+        setError("Failed to parse document");
+        setAttachedFile(null);
+      }
+    }
+  };
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,10 +99,14 @@ export default function NewProjectPage() {
         throw new Error("No active instance selected. Please select an instance first.");
       }
 
+      const fullDescription = fileContent
+        ? `${formData.description}\n\n--- Attached Document Content ---\n${fileContent}`
+        : formData.description;
+
       const data = await generateProject({
         instance_id: tenantId,
         name: formData.name,
-        description: formData.description,
+        description: fullDescription,
         start_at: formData.start_at,
         end_at: formData.end_at,
         location: formData.location
@@ -187,6 +224,62 @@ export default function NewProjectPage() {
                   style={{ background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", color: "#fff", padding: "0.75rem", borderRadius: "8px", width: "100%", resize: "vertical" }}
                 />
               </label>
+              <div style={{ gridColumn: "1 / -1" }}>
+                <span style={{ color: "#9ca3af", fontSize: "0.875rem", marginBottom: "0.5rem", display: "block" }}>Attach Document (Optional)</span>
+                <div
+                  style={{
+                    border: "2px dashed rgba(255, 255, 255, 0.2)",
+                    borderRadius: "8px",
+                    padding: "1.5rem",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    background: attachedFile ? "rgba(34, 197, 94, 0.1)" : "rgba(255, 255, 255, 0.02)",
+                    transition: "all 0.2s ease"
+                  }}
+                  onClick={() => document.getElementById("file-input")?.click()}
+                >
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept=".pdf,.docx,.doc,.txt"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                  />
+                  {attachedFile ? (
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                      <span style={{ color: "#22c55e", fontWeight: 500 }}>{attachedFile.name}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAttachedFile(null);
+                          setFileContent("");
+                        }}
+                        style={{ background: "none", border: "none", color: "#9ca3af", cursor: "pointer", padding: "0.25rem" }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5" style={{ marginBottom: "0.5rem" }}>
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                      </svg>
+                      <p style={{ color: "#9ca3af", fontSize: "0.875rem", margin: 0 }}>Click to upload PDF, DOCX, or TXT</p>
+                      <p style={{ color: "#6b7280", fontSize: "0.75rem", margin: "0.25rem 0 0" }}>AI will extract content to enhance task generation</p>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
             <button
               className="action primary"
