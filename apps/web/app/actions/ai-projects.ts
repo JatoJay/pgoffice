@@ -35,7 +35,7 @@ async function generateProjectPlan(input: {
   location: string;
 }): Promise<GeneratedProject> {
   if (!GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is not configured");
+    throw new Error("AI features are not available. Please configure GEMINI_API_KEY in environment variables.");
   }
 
   const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);

@@ -67,17 +67,17 @@ export const Overview = () => {
           program. pgarcotoffice keeps the narrative and the numbers aligned.
         </p>
         <div className="overview-actions">
-          <Link className="action primary" href="/onboarding">
+          <Link className="action primary" href="/projects">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 5v14M5 12h14"/>
             </svg>
-            Launch a program
+            Launch a project
           </Link>
-          <Link className="action ghost" href="/programs">
+          <Link className="action ghost" href="/projects">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>
             </svg>
-            View all programs
+            View all projects
           </Link>
         </div>
       </div>
