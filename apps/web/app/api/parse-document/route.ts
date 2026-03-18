@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as pdfParse from "pdf-parse";
-import * as mammoth from "mammoth";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,13 +16,15 @@ export async function POST(request: NextRequest) {
     let content = "";
 
     if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
-      const pdf = (pdfParse as unknown as { default: (buffer: Buffer) => Promise<{ text: string }> }).default;
-      const data = await pdf(buffer);
+      const pdfParse = await import("pdf-parse");
+      const parser = pdfParse.default || pdfParse;
+      const data = await parser(buffer);
       content = data.text;
     } else if (
       file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
       file.name.endsWith(".docx")
     ) {
+      const mammoth = await import("mammoth");
       const result = await mammoth.extractRawText({ buffer });
       content = result.value;
     } else if (file.type === "application/msword" || file.name.endsWith(".doc")) {
