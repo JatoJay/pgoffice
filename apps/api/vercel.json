@@ -1,17 +1,17 @@
 {
   "version": 2,
-  "buildCommand": "echo 'skip build'",
+  "buildCommand": "npm run build",
   "outputDirectory": ".",
   "builds": [
     {
-      "src": "api/index.ts",
+      "src": "dist/api/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/index.ts"
+      "dest": "dist/api/index.js"
     }
   ]
 }

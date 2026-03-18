@@ -192,7 +192,6 @@ export class DocumentsService {
 
   async generateDocumentFromTask(taskId: string, projectId: string, inputTenantId?: string): Promise<DocumentRow> {
     const tenantId = this.resolveTenantId(inputTenantId);
-    console.log("generateDocumentFromTask", { taskId, projectId, tenantId, inputTenantId });
 
     const taskResult = await this.db.query<{
       id: string;
@@ -206,7 +205,6 @@ export class DocumentsService {
       [taskId, tenantId]
     );
     const task = taskResult.rows[0];
-    console.log("Task query result:", { rowCount: taskResult.rowCount, task });
     if (!task) {
       throw new BadRequestException("Task not found");
     }
