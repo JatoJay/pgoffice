@@ -209,7 +209,8 @@ export class DocumentsService {
       estimated_cost: number | null;
     }>(
       `SELECT id, name, description, status, due_at, estimated_cost FROM tasks WHERE id = $1 AND tenant_id = $2`,
-      [taskId, tenantId]
+      [taskId, tenantId],
+      { tenantId, isSuperAdmin: true }
     );
     console.log("Task query result:", { rowCount: taskResult.rowCount, hasRows: taskResult.rows.length > 0 });
     const task = taskResult.rows[0];
@@ -219,7 +220,8 @@ export class DocumentsService {
 
     const projectResult = await this.db.query<{ name: string; description: string | null }>(
       `SELECT name, description FROM projects WHERE id = $1 AND tenant_id = $2`,
-      [projectId, tenantId]
+      [projectId, tenantId],
+      { tenantId, isSuperAdmin: true }
     );
     const project = projectResult.rows[0];
 
