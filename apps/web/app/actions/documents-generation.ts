@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export async function generateDocumentFromTask(taskId: string, projectId: string, tenantId: string) {
   const res = await fetch(`${API_URL}/api/v1/documents/generate/task/${taskId}`, {

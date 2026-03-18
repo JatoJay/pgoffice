@@ -25,7 +25,7 @@ type ProjectsResponse = {
 };
 
 async function getInstanceProjects(instanceId: string): Promise<{ data: ProjectsResponse | null; error: string | null }> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   try {
     const res = await fetch(`${apiUrl}/api/v1/ai-projects/instances/${instanceId}/projects`, {
       headers: {
@@ -45,7 +45,7 @@ async function getInstanceProjects(instanceId: string): Promise<{ data: Projects
 }
 
 async function getInstance(instanceId: string): Promise<{ name: string } | null> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   try {
     const res = await fetch(`${apiUrl}/api/v1/instances/${instanceId}`, {
       headers: {

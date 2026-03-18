@@ -1,7 +1,7 @@
 import "server-only";
 import { cookies } from "next/headers";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const BASE_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 const TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID ?? "";
 const USE_AUTH_BYPASS = (process.env.NEXT_PUBLIC_AUTH_BYPASS ?? "true").toLowerCase() === "true";
 

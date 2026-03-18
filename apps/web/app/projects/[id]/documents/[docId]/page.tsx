@@ -30,7 +30,7 @@ type DocumentVersion = {
 };
 
 async function getDocumentData(docId: string, tenantId: string): Promise<{ document: Document | null; versions: DocumentVersion[]; error: string | null }> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   try {
     const [docRes, versionsRes] = await Promise.all([
       fetch(`${apiUrl}/api/v1/documents/${docId}`, {

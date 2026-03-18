@@ -21,7 +21,7 @@ async function getAIProjects(tenantId: string): Promise<{ items: AIProject[]; er
     return { items: [], error: null };
   }
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   try {
     const res = await fetch(`${apiUrl}/api/v1/ai-projects/instances/${tenantId}/projects`, {
       headers: { "x-tenant-id": tenantId, "x-super-admin": "true" },

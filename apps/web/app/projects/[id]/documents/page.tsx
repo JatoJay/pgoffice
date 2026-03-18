@@ -26,7 +26,7 @@ type Project = {
 };
 
 async function getDocumentsData(projectId: string, tenantId: string): Promise<{ project: Project | null; documents: Document[]; error: string | null }> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
   try {
     const [projectRes, docsRes] = await Promise.all([
       fetch(`${apiUrl}/api/v1/ai-projects/${projectId}`, {
