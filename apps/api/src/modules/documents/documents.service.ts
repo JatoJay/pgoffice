@@ -190,8 +190,8 @@ export class DocumentsService {
     return result.rows[0] || null;
   }
 
-  async generateDocumentFromTask(taskId: string, projectId: string): Promise<DocumentRow> {
-    const tenantId = this.resolveTenantId();
+  async generateDocumentFromTask(taskId: string, projectId: string, inputTenantId?: string): Promise<DocumentRow> {
+    const tenantId = this.resolveTenantId(inputTenantId);
 
     const taskResult = await this.db.query<{
       id: string;
@@ -266,8 +266,8 @@ Make it professional and actionable.`;
     }) as Promise<DocumentRow>;
   }
 
-  async generateProjectSummaryDocument(projectId: string): Promise<DocumentRow> {
-    const tenantId = this.resolveTenantId();
+  async generateProjectSummaryDocument(projectId: string, inputTenantId?: string): Promise<DocumentRow> {
+    const tenantId = this.resolveTenantId(inputTenantId);
 
     const projectResult = await this.db.query<{
       name: string;

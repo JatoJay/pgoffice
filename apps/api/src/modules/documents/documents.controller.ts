@@ -234,15 +234,19 @@ export class DocumentsController {
   @Post("generate/task/:taskId")
   async generateFromTask(
     @Param("taskId") taskId: string,
+    @Headers("x-tenant-id") tenantId: string,
     @Body() body: { project_id: string }
   ) {
-    const document = await this.documentsService.generateDocumentFromTask(taskId, body.project_id);
+    const document = await this.documentsService.generateDocumentFromTask(taskId, body.project_id, tenantId);
     return { document };
   }
 
   @Post("generate/project/:projectId")
-  async generateProjectSummary(@Param("projectId") projectId: string) {
-    const document = await this.documentsService.generateProjectSummaryDocument(projectId);
+  async generateProjectSummary(
+    @Param("projectId") projectId: string,
+    @Headers("x-tenant-id") tenantId: string
+  ) {
+    const document = await this.documentsService.generateProjectSummaryDocument(projectId, tenantId);
     return { document };
   }
 }
