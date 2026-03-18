@@ -18,4 +18,11 @@ export class RequestContextService {
   get(): RequestContext | undefined {
     return this.storage.getStore();
   }
+
+  set(context: Partial<RequestContext>): void {
+    const store = this.storage.getStore();
+    if (store) {
+      Object.assign(store, context);
+    }
+  }
 }
