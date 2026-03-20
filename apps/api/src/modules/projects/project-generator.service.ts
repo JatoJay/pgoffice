@@ -421,7 +421,8 @@ export class ProjectGeneratorService {
   async listInstanceProjects(instanceId: string): Promise<ProjectRow[]> {
     const { rows } = await this.db.query<ProjectRow>(
       `SELECT * FROM projects WHERE instance_id = $1 ORDER BY created_at DESC`,
-      [instanceId]
+      [instanceId],
+      { tenantId: instanceId, isSuperAdmin: true }
     );
     return rows;
   }
@@ -429,7 +430,8 @@ export class ProjectGeneratorService {
   async getProject(projectId: string): Promise<ProjectRow | null> {
     const { rows } = await this.db.query<ProjectRow>(
       `SELECT * FROM projects WHERE id = $1`,
-      [projectId]
+      [projectId],
+      { isSuperAdmin: true }
     );
     return rows[0] ?? null;
   }
